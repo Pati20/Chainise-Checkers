@@ -1,23 +1,23 @@
-package App.Plansza;
+package LocalApp.Board;
 
-import App.InstancjaGry;
+import LocalApp.GameInstance;
+import LocalApp.PlayersColor;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
-
-public class PlanszaPola extends Circle {
+public class BoardField extends Circle {
     public int pawn;
     public int col;
     public int row;
     public int winID;
-    InstancjaGry localboard;
-    private PlanszaPola tempRef;
+    GameInstance localboard;
+    private BoardField tempRef;
     private int buffer;
 
-    public PlanszaPola(int id, int winID, int col, int row) {
+    public BoardField(int id, int winID, int col, int row) {
         pawn = id;
 
         this.localboard = localboard;
@@ -28,7 +28,7 @@ public class PlanszaPola extends Circle {
         tempRef = this;
     }
 
-    public PlanszaPola(InstancjaGry localboard, int id, int winID, int col, int row) {
+    public BoardField(GameInstance localboard, int id, int winID, int col, int row) {
         pawn = id;
 
         this.localboard = localboard;
@@ -38,7 +38,7 @@ public class PlanszaPola extends Circle {
 
         tempRef = this;
 
-        setFill(localboard.playerColors[pawn]);
+        setFill(PlayersColor.COLOR1.playerscolor(pawn));
         setStroke(Color.ALICEBLUE);
         setStrokeType(StrokeType.INSIDE);
         setStrokeWidth(2);

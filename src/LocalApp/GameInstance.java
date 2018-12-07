@@ -1,6 +1,8 @@
-package App;
+package LocalApp;
 
-import App.Plansza.PlanszaFabryka;
+import LocalApp.Board.Board;
+import LocalApp.Board.BoardFactory;
+import LocalApp.Board.BoardField;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -8,26 +10,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
-import App.Plansza.Plansza;
-import App.Plansza.PlanszaPola;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.abs;
 import static javafx.geometry.Pos.CENTER;
 
-
-import static java.lang.Math.abs;
-
-public class InstancjaGry {
+public class GameInstance {
     //declaration of board elements
-    public Color[] playerColors = {Color.LIGHTGRAY, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE};
-    public ArrayList<PlanszaPola> boardFields;
-    public PlanszaPola selectedPawn = null;
-    public PlanszaPola movedPawn;
+   // public Color[] playerColors = {Color.LIGHTGRAY, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE};
+    public ArrayList<BoardField> boardFields;
+    public BoardField selectedPawn = null;
+    public BoardField movedPawn;
     public Boolean activityOfBoard = false;
     public List<String> moveRegister = new ArrayList<>();
-    public Plansza board;
+    public Board board;
     int playerID;
 
     //declaration of GUI elements
@@ -35,10 +32,10 @@ public class InstancjaGry {
     VBox vbox;
     ClientApp clientapp;
 
-    public InstancjaGry(ClientApp clientapp, int playerID, int numberOfPlayers) {
+    public GameInstance(ClientApp clientapp, int playerID, int numberOfPlayers) {
         this.clientapp = clientapp;
         this.playerID = playerID + 1;
-        boardFields = PlanszaFabryka.createLocalBoard(61).constructBoard(this, numberOfPlayers);
+        boardFields = BoardFactory.createLocalBoard(61).constructBoard(this, numberOfPlayers);
         generateGUI();
     }
 
@@ -64,7 +61,7 @@ public class InstancjaGry {
     }
 
     public Boolean checkWin() {
-        for (PlanszaPola field : boardFields) {
+        for (BoardField field : boardFields) {
             if (field.pawn == playerID && field.winID != playerID) {
                 return false;
             }
@@ -97,7 +94,7 @@ public class InstancjaGry {
         }
 
         //declare positions of fields in gui table
-        for (PlanszaPola i : boardFields) {
+        for (BoardField i : boardFields) {
             GridPane.setConstraints(i, i.col, i.row);
         }
 
@@ -117,7 +114,8 @@ public class InstancjaGry {
         Label colorLabel = new Label("Twój kolor: ");
         Circle circle = new Circle();
         circle.setRadius(10);
-        circle.setFill(playerColors[playerID]);
+        //circle.setFill(playerColors[playerID]);
+        circle.setFill(PlayersColor.COLOR1.playerscolor(playerID));
         circle.setStroke(Color.GRAY);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setStrokeWidth(2);
@@ -152,7 +150,7 @@ public class InstancjaGry {
     }
 
     //select or deselect pawn in gui, draw stroke
-    public void selectPawn(PlanszaPola pos) {
+    public void selectPawn(BoardField pos) {
         if (selectedPawn != null) {
             selectedPawn.setStroke(Color.GRAY);
             selectedPawn.setStrokeWidth(2);
@@ -168,12 +166,12 @@ public class InstancjaGry {
     }
 
     //move pawn from oldPos to newPos
-    public boolean movePawn(PlanszaPola oldPos, PlanszaPola newPos) {
+    public boolean movePawn(BoardField oldPos, BoardField newPos) {
         if (testMove(oldPos, newPos)) {
             newPos.pawn = oldPos.pawn;
             oldPos.pawn = 0;
-            newPos.setFill(playerColors[newPos.pawn]);
-            oldPos.setFill(playerColors[oldPos.pawn]);
+            newPos.setFill(PlayersColor.COLOR1.playerscolor(newPos.pawn));
+            oldPos.setFill(PlayersColor.COLOR1.playerscolor(oldPos.pawn));
             movedPawn = newPos;
             return true;
         }
@@ -181,15 +179,15 @@ public class InstancjaGry {
     }
 
     //move pawn by server_do_not_use //by Akageneko
-    public void movePawnServer(PlanszaPola oldPos, PlanszaPola newPos) {
+    public void movePawnServer(BoardField oldPos, BoardField newPos) {
         newPos.pawn = oldPos.pawn;
         oldPos.pawn = 0;
-        newPos.setFill(playerColors[newPos.pawn]);
-        oldPos.setFill(playerColors[oldPos.pawn]);
+        newPos.setFill(PlayersColor.COLOR1.playerscolor(newPos.pawn));
+        oldPos.setFill(PlayersColor.COLOR1.playerscolor(oldPos.pawn));
     }
 
     //move pawn from oldPos to newPos
-    public boolean moveAndSendPawn(PlanszaPola oldPos, PlanszaPola newPos) {
+    public boolean moveAndSendPawn(BoardField oldPos, BoardField newPos) {
         if (testMove(oldPos, newPos)) {
             movePawn(oldPos, newPos);
             moveRegister.add(Integer.toString(oldPos.col));
@@ -202,8 +200,8 @@ public class InstancjaGry {
     }
 
     //return field with specified column and row
-    public PlanszaPola findField(int col, int row) {
-        for (PlanszaPola field : boardFields) {
+    public BoardField findField(int col, int row) {
+        for (BoardField field : boardFields) {
             if (field.col == col && field.row == row) {
                 return field;
             }
@@ -212,7 +210,7 @@ public class InstancjaGry {
     }
 
     //check correctness of move
-    public boolean testMove(PlanszaPola oldPos, PlanszaPola newPos) {
+    public boolean testMove(BoardField oldPos, BoardField newPos) {
         if (newPos.pawn == 0 && oldPos != newPos) {
             if (movedPawn == null) {
                 if ((abs(oldPos.col - newPos.col) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
