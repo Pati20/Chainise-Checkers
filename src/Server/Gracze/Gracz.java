@@ -5,6 +5,7 @@ import javafx.scene.paint.Color;
 import Server.StaraPlansza;
 
 public class Gracz {
+
     public int playerIDOnBoard;
     public int clientID;
     public Color color;
@@ -13,7 +14,12 @@ public class Gracz {
     public String moves = "";
 
 
-    //Dla Ludzi
+    /**
+     * Konstruktor dla graczy
+     * @param cclientID
+     * @param nnumber
+     * @param ccolor
+     */
     public Gracz(int cclientID, int nnumber, Color ccolor) {
         this.color = ccolor;
         this.playerIDOnBoard = nnumber;
@@ -22,19 +28,21 @@ public class Gracz {
 
     }
 
-    //Dla botów
+    /**
+     * Konstruktor dla boów
+     * @param nnumber
+     * @param numberOfPlayers
+     * @param staraPlansza
+     */
     public Gracz(int nnumber, int numberOfPlayers, StaraPlansza staraPlansza) {
         this.playerIDOnBoard = nnumber;
         this.numberOfPlayers = numberOfPlayers;
-
     }
 
     public String Turn() {
-
         return moves;
     }
 
-    public void gameStart() {
-    }
+    public void gameStart() {}
 
 }

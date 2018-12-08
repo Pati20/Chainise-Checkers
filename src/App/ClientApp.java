@@ -15,12 +15,12 @@ import static javafx.geometry.Pos.CENTER;
 
 public class ClientApp extends Application {
 
-    InstancjaGry instancjaGry; //- klasa w produkcji jeszcze
+    InstancjaGry instancjaGry;
     private Stage mainWindow;
     private Scene startScene, gameScene, waitScene, playersWaitScene, winScene;
     private CheckBox checkbox1[] = new CheckBox[6];
     private CheckBox checkbox2[] = new CheckBox[6];
-    private int players,boot;
+    private int players, boot;
     public ClientViewer clientCommunicator;
     TextField addressField;
 
@@ -81,13 +81,13 @@ public class ClientApp extends Application {
 
     //dopracować
     public void startGame(int numberOfHuman, int numberOfBots) {
-       // startLocalGame(playerID, numberOfHuman+numberOfBots);
+        // startLocalGame(playerID, numberOfHuman+numberOfBots);
         startPlayersWaiting();
         clientCommunicator = new ClientViewer(this, numberOfHuman, numberOfBots, true, addressField.getText());
     }
 
     public void joinGame() {
-        clientCommunicator = new ClientViewer(this, 0, 0, false,addressField.getText());
+        clientCommunicator = new ClientViewer(this, 0, 0, false, addressField.getText());
     }
 
     void startLocalGame(int playerID, int numberOfPlayers) {
@@ -140,7 +140,7 @@ public class ClientApp extends Application {
     public boolean onExit() {
 
         try {
-            clientCommunicator.activityOfClient=false;
+            clientCommunicator.activityOfClient = false;
             clientCommunicator.terminateServer();
             clientCommunicator.interrupt();
         } catch (Exception e) {
@@ -163,7 +163,7 @@ public class ClientApp extends Application {
         Label label1 = new Label("Liczba graczy");
         Label label2 = new Label("Liczba botów");
 
-        for (int i = 0; i < 6;i++) {
+        for (int i = 0; i < 6; i++) {
             int j = i + 1;
             checkbox1[i] = new CheckBox("" + (i + 1));
             checkbox1[i].setOnMouseClicked(event -> setCheckBoxNotSelected(j, 1));
@@ -176,16 +176,16 @@ public class ClientApp extends Application {
         hboxOfBoot.getChildren().addAll(checkbox2);
 
         Button button1 = new Button("Utwórz nową grę");
-        button1.setOnMouseClicked(event -> checkPlayersNumber(getPlayers(),getBoot()));
+        button1.setOnMouseClicked(event -> checkPlayersNumber(getPlayers(), getBoot()));
 
         Label label3 = new Label("Adres serwera");
-        addressField = new TextField ();
+        addressField = new TextField();
         addressField.setText("localhost");
 
         Button button2 = new Button("Dołącz do trwającej gry");
         // button2.setOnMouseClicked(event -> joinGame());
 
-        vbox.getChildren().addAll(label3, addressField,new Separator(), label1,hboxOfPlayers, label2, hboxOfBoot, button1, new Separator(), button2);
+        vbox.getChildren().addAll(label3, addressField, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, button1, new Separator(), button2);
 
         Label playersWaitLabel = new Label("trwa\ndołączanie\ngraczy");
         playersWaitLabel.setFont(Font.font("Verdana", 30));
