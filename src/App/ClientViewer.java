@@ -37,6 +37,8 @@ public class ClientViewer extends Thread {
     //reference to client
     ClientApp clientapp;
 
+    public ClientViewer() {
+    }
 
     public ClientViewer(ClientApp clientapp, int nnubmerOfHuman, int nnumberOfBots, boolean hhost, String address) {
         numberOfBots = nnumberOfBots;

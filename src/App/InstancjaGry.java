@@ -141,7 +141,7 @@ public class InstancjaGry {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Autorzy programu");
-        alert.setContentText("Mikołaj Pietrek, Mateusz Dąbek");
+        alert.setContentText("Albert Piekielny, Patrycja Paradowska");
         alert.show();
     }
 
@@ -150,8 +150,8 @@ public class InstancjaGry {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Skrócona instrukcja");
-        alert.setContentText("Celem gry jest ustawienie wszystkich swoich pionów w przeciwległym promieniu. " +
-                "Podczas tury można poruszyć się jednym pionem na sąsiadujące pole lub przeskoczyć dowolną ilość innych pionów.");
+        alert.setContentText("Celem gry jest ustawienie wszystkich \n swoich pionów w przeciwległym promieniu.\n " +
+                "Podczas tury można poruszyć się jednym pionem \nna sąsiadujące pole lub przeskoczyć dowolną ilość innych pionów.");
         alert.show();
     }
 

@@ -25,14 +25,12 @@ public class ClientApp extends Application {
     TextField addressField;
 
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+
 
     public boolean checkPlayersNumber(Integer numberOfHuman, Integer numberOfBots) {
         int sum = numberOfHuman + numberOfBots;
         if (sum == 2 || sum == 3 || sum == 4 || sum == 6) {
-            //startGame(numberOfHuman.intValue(), numberOfBots.intValue());
+            startGame(numberOfHuman, numberOfBots);
             return true;
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -91,10 +89,10 @@ public class ClientApp extends Application {
     }
 
     void startLocalGame(int playerID, int numberOfPlayers) {
-        //    gameInstance = new GameInstance(this, playerID, numberOfPlayers);
+        instancjaGry = new InstancjaGry(this, playerID, numberOfPlayers);
         Platform.runLater(new Runnable() {
             public void run() {
-                //   gameScene = new Scene(gameInstance.vbox, 500, 544);
+                gameScene = new Scene(instancjaGry.vbox, 500, 544);
                 mainWindow.setScene(waitScene);
                 mainWindow.setMinHeight(634);
                 mainWindow.setMinWidth(600);
@@ -183,7 +181,7 @@ public class ClientApp extends Application {
         addressField.setText("localhost");
 
         Button button2 = new Button("Dołącz do trwającej gry");
-        // button2.setOnMouseClicked(event -> joinGame());
+         button2.setOnMouseClicked(event -> joinGame());
 
         vbox.getChildren().addAll(label3, addressField, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, button1, new Separator(), button2);
 
@@ -213,5 +211,4 @@ public class ClientApp extends Application {
         mainWindow.setMaxWidth(300);
         mainWindow.show();
     }
-
 }
