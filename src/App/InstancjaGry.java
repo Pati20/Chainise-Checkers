@@ -1,30 +1,34 @@
-package LocalApp;
+package App;
 
-import LocalApp.Board.Board;
-import LocalApp.Board.BoardFactory;
-import LocalApp.Board.BoardField;
+import App.Plansza.KoloryModeli;
+import App.Plansza.PlanszaFabryka;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static java.lang.Math.abs;
+
+
+import App.Plansza.Plansza;
+import App.Plansza.PlanszaPola;
 import static javafx.geometry.Pos.CENTER;
 
-public class GameInstance {
+/**
+ * Klasa odpowiedzialna za tworzenie rozgrywki
+ */
+public class InstancjaGry {
     //declaration of board elements
-   // public Color[] playerColors = {Color.LIGHTGRAY, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE};
-    public ArrayList<BoardField> boardFields;
-    public BoardField selectedPawn = null;
-    public BoardField movedPawn;
+ //   public Color[] playerColors = {Color.LIGHTGRAY, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE};
+    public ArrayList<PlanszaPola> boardFields;
+    public PlanszaPola selectedPawn = null;
+    public PlanszaPola movedPawn;
     public Boolean activityOfBoard = false;
     public List<String> moveRegister = new ArrayList<>();
-    public Board board;
+    public Plansza board;
     int playerID;
 
     //declaration of GUI elements
@@ -32,10 +36,10 @@ public class GameInstance {
     VBox vbox;
     ClientApp clientapp;
 
-    public GameInstance(ClientApp clientapp, int playerID, int numberOfPlayers) {
+    public InstancjaGry(ClientApp clientapp, int playerID, int numberOfPlayers) {
         this.clientapp = clientapp;
         this.playerID = playerID + 1;
-        boardFields = BoardFactory.createLocalBoard(61).constructBoard(this, numberOfPlayers);
+        boardFields = PlanszaFabryka.createLocalBoard(61).constructBoard(this, numberOfPlayers);
         generateGUI();
     }
 
@@ -61,15 +65,18 @@ public class GameInstance {
     }
 
     public Boolean checkWin() {
-        for (BoardField field : boardFields) {
-            if (field.pawn == playerID && field.winID != playerID) {
+        for (PlanszaPola field : boardFields) {
+            if (field.pionek == playerID && field.winID != playerID) {
                 return false;
             }
         }
         clientapp.winScreen();
         return true;
     }
-    ///draw buttons and fields of board
+
+   /**
+    * Metoda odpowada za stworzenie planszy do rozgrywki
+    */
     void generateGUI() {
 
         //create new table in window to put fields
@@ -94,7 +101,7 @@ public class GameInstance {
         }
 
         //declare positions of fields in gui table
-        for (BoardField i : boardFields) {
+        for (PlanszaPola i : boardFields) {
             GridPane.setConstraints(i, i.col, i.row);
         }
 
@@ -114,8 +121,7 @@ public class GameInstance {
         Label colorLabel = new Label("Twój kolor: ");
         Circle circle = new Circle();
         circle.setRadius(10);
-        //circle.setFill(playerColors[playerID]);
-        circle.setFill(PlayersColor.COLOR1.playerscolor(playerID));
+        circle.setFill(KoloryModeli.Kolor.KoloryModeli(playerID));
         circle.setStroke(Color.GRAY);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setStrokeWidth(2);
@@ -150,14 +156,14 @@ public class GameInstance {
     }
 
     //select or deselect pawn in gui, draw stroke
-    public void selectPawn(BoardField pos) {
+    public void selectPawn(PlanszaPola pos) {
         if (selectedPawn != null) {
             selectedPawn.setStroke(Color.GRAY);
             selectedPawn.setStrokeWidth(2);
             moveAndSendPawn(selectedPawn, pos);
             selectedPawn = null;
         } else {
-            if ((pos.pawn) == playerID) {
+            if ((pos.pionek) == playerID) {
                 selectedPawn = pos;
                 selectedPawn.setStroke(Color.ORANGE);
                 selectedPawn.setStrokeWidth(5);
@@ -166,12 +172,12 @@ public class GameInstance {
     }
 
     //move pawn from oldPos to newPos
-    public boolean movePawn(BoardField oldPos, BoardField newPos) {
+    public boolean movePawn(PlanszaPola oldPos, PlanszaPola newPos) {
         if (testMove(oldPos, newPos)) {
-            newPos.pawn = oldPos.pawn;
-            oldPos.pawn = 0;
-            newPos.setFill(PlayersColor.COLOR1.playerscolor(newPos.pawn));
-            oldPos.setFill(PlayersColor.COLOR1.playerscolor(oldPos.pawn));
+            newPos.pionek = oldPos.pionek;
+            oldPos.pionek = 0;
+            newPos.setFill(KoloryModeli.Kolor.KoloryModeli(newPos.pionek));
+            oldPos.setFill(KoloryModeli.Kolor.KoloryModeli(oldPos.pionek));
             movedPawn = newPos;
             return true;
         }
@@ -179,15 +185,15 @@ public class GameInstance {
     }
 
     //move pawn by server_do_not_use //by Akageneko
-    public void movePawnServer(BoardField oldPos, BoardField newPos) {
-        newPos.pawn = oldPos.pawn;
-        oldPos.pawn = 0;
-        newPos.setFill(PlayersColor.COLOR1.playerscolor(newPos.pawn));
-        oldPos.setFill(PlayersColor.COLOR1.playerscolor(oldPos.pawn));
+    public void movePawnServer(PlanszaPola oldPos, PlanszaPola newPos) {
+        newPos.pionek = oldPos.pionek;
+        oldPos.pionek = 0;
+        newPos.setFill(KoloryModeli.Kolor.KoloryModeli(newPos.pionek));
+        oldPos.setFill(KoloryModeli.Kolor.KoloryModeli(oldPos.pionek));
     }
 
     //move pawn from oldPos to newPos
-    public boolean moveAndSendPawn(BoardField oldPos, BoardField newPos) {
+    public boolean moveAndSendPawn(PlanszaPola oldPos, PlanszaPola newPos) {
         if (testMove(oldPos, newPos)) {
             movePawn(oldPos, newPos);
             moveRegister.add(Integer.toString(oldPos.col));
@@ -200,8 +206,8 @@ public class GameInstance {
     }
 
     //return field with specified column and row
-    public BoardField findField(int col, int row) {
-        for (BoardField field : boardFields) {
+    public PlanszaPola findField(int col, int row) {
+        for (PlanszaPola field : boardFields) {
             if (field.col == col && field.row == row) {
                 return field;
             }
@@ -210,8 +216,8 @@ public class GameInstance {
     }
 
     //check correctness of move
-    public boolean testMove(BoardField oldPos, BoardField newPos) {
-        if (newPos.pawn == 0 && oldPos != newPos) {
+    public boolean testMove(PlanszaPola oldPos, PlanszaPola newPos) {
+        if (newPos.pionek == 0 && oldPos != newPos) {
             if (movedPawn == null) {
                 if ((abs(oldPos.col - newPos.col) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
                     return true;
@@ -221,13 +227,13 @@ public class GameInstance {
                 if (oldPos.row == newPos.row) {
                     //right
                     if (newPos.col == oldPos.col + 4) {
-                        if (findField(oldPos.col + 2, oldPos.row).pawn > 0) {
+                        if (findField(oldPos.col + 2, oldPos.row).pionek > 0) {
                             return true;
                         }
                     }
                     //left
                     if (newPos.col == oldPos.col - 4) {
-                        if (findField(oldPos.col - 2, oldPos.row).pawn > 0) {
+                        if (findField(oldPos.col - 2, oldPos.row).pionek > 0) {
                             return true;
                         }
                     }
@@ -236,13 +242,13 @@ public class GameInstance {
                 if (newPos.row == oldPos.row + 2) {
                     //right up
                     if (newPos.col == oldPos.col + 2) {
-                        if (findField(oldPos.col + 1, oldPos.row + 1).pawn > 0) {
+                        if (findField(oldPos.col + 1, oldPos.row + 1).pionek > 0) {
                             return true;
                         }
                     }
                     //left up
                     if (newPos.col == oldPos.col - 2) {
-                        if (findField(oldPos.col - 1, oldPos.row + 1).pawn > 0) {
+                        if (findField(oldPos.col - 1, oldPos.row + 1).pionek > 0) {
                             return true;
                         }
                     }
@@ -251,13 +257,13 @@ public class GameInstance {
                 if (newPos.row == oldPos.row - 2) {
                     //right down
                     if (newPos.col == oldPos.col + 2) {
-                        if (findField(oldPos.col + 1, oldPos.row - 1).pawn > 0) {
+                        if (findField(oldPos.col + 1, oldPos.row - 1).pionek > 0) {
                             return true;
                         }
                     }
                     //left down
                     if (newPos.col == oldPos.col - 2) {
-                        if (findField(oldPos.col - 1, oldPos.row - 1).pawn > 0) {
+                        if (findField(oldPos.col - 1, oldPos.row - 1).pionek > 0) {
                             return true;
                         }
                     }

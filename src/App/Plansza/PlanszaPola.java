@@ -1,26 +1,28 @@
-package LocalApp.Board;
+package App.Plansza;
 
-import LocalApp.GameInstance;
-import LocalApp.PlayersColor;
+import App.InstancjaGry;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
 
-public class BoardField extends Circle {
-    public int pawn;
+/**
+ * Klasa odpowiedzialna za implementację wyglądu planszy - stworzenie 61 kółek
+ */
+public class PlanszaPola extends Circle {
+    public int pionek;
     public int col;
     public int row;
     public int winID;
-    GameInstance localboard;
-    private BoardField tempRef;
+    InstancjaGry instancjaGry;
+    private PlanszaPola tempRef;
     private int buffer;
 
-    public BoardField(int id, int winID, int col, int row) {
-        pawn = id;
+    public PlanszaPola(int id, int winID, int col, int row) {
+        pionek = id;
 
-        this.localboard = localboard;
+        this.instancjaGry = instancjaGry;
         this.col = col;
         this.row = row;
         this.winID = winID;
@@ -28,17 +30,17 @@ public class BoardField extends Circle {
         tempRef = this;
     }
 
-    public BoardField(GameInstance localboard, int id, int winID, int col, int row) {
-        pawn = id;
+    public PlanszaPola(InstancjaGry instancjaGry, int id, int winID, int col, int row) {
+        pionek = id;
 
-        this.localboard = localboard;
+        this.instancjaGry = instancjaGry;
         this.col = col;
         this.row = row;
         this.winID = winID;
 
         tempRef = this;
 
-        setFill(PlayersColor.COLOR1.playerscolor(pawn));
+        setFill(KoloryModeli.Kolor.KoloryModeli(pionek));
         setStroke(Color.ALICEBLUE);
         setStrokeType(StrokeType.INSIDE);
         setStrokeWidth(2);
@@ -47,7 +49,7 @@ public class BoardField extends Circle {
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
-                localboard.selectPawn(tempRef);
+                instancjaGry.selectPawn(tempRef);
             }
         });
     }

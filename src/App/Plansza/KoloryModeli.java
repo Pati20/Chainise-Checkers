@@ -1,13 +1,15 @@
-package LocalApp;
 
+package App.Plansza;
 import javafx.scene.paint.Color;
 
-public enum PlayersColor {
+/**
+ * Typ wyliczeniowy, aby w łatwy sposób móc modyfikować kolory modeli
+ */
+public enum KoloryModeli {
 
-    COLOR1;
+    Kolor;
 
-
-    public Color playerscolor(int i) {
+    public Color KoloryModeli(int i) {
         switch (i) {
             case 0:
                 return Color.LIGHTGRAY;
