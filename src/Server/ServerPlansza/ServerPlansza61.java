@@ -29,6 +29,15 @@ public class ServerPlansza61 extends ServerPlansza{
         return serverPlanszaPola;
     }
 
+    /**
+     * Meotoda ustawia graczy w narożnikach w zależności od liczby graczy
+     * @param corn1 - narożnik numer 1
+     * @param corn2 - narożnik numer 2
+     * @param corn3 - narożnik numer 3
+     * @param corn4 - narożnik numer 4
+     * @param corn5 - narożnik numer 5
+     * @param corn6 - narożnik numer 6
+     */
     void setPawns(int corn1, int corn2, int corn3, int corn4, int corn5, int corn6) {
         for (int i = 0; i < 4; i++)
             for (int j = 0; j <= i; j++) {
