@@ -22,6 +22,7 @@ import static javafx.geometry.Pos.CENTER;
  */
 public class InstancjaGry {
     //declaration of board elements
+ //   public Color[] playerColors = {Color.LIGHTGRAY, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE};
     public ArrayList<PlanszaPola> boardFields;
     public PlanszaPola selectedPawn = null;
     public PlanszaPola movedPawn;
@@ -140,7 +141,7 @@ public class InstancjaGry {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Autorzy programu");
-        alert.setContentText("Albert Piekielny, Patrycja Paradowska");
+        alert.setContentText("Mikołaj Pietrek, Mateusz Dąbek");
         alert.show();
     }
 
