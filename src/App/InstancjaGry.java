@@ -21,12 +21,11 @@ import static javafx.geometry.Pos.CENTER;
  * Klasa odpowiedzialna za tworzenie rozgrywki
  */
 public class InstancjaGry {
-    //declaration of board elements
- //   public Color[] playerColors = {Color.LIGHTGRAY, Color.RED, Color.GREEN, Color.BLUE, Color.CYAN, Color.MAGENTA, Color.YELLOW, Color.ORANGE};
-    public ArrayList<PlanszaPola> boardFields;
-    public PlanszaPola selectedPawn = null;
-    public PlanszaPola movedPawn;
-    public Boolean activityOfBoard = false;
+
+    public ArrayList<PlanszaPola> polaPlanszy;
+    public PlanszaPola wybranyPionek = null;
+    public PlanszaPola ruszonyPionek;
+    public Boolean aktywnyNaPlanszy = false;
     public List<String> moveRegister = new ArrayList<>();
     public Plansza board;
     int playerID;
@@ -39,33 +38,33 @@ public class InstancjaGry {
     public InstancjaGry(ClientApp clientapp, int playerID, int numberOfPlayers) {
         this.clientapp = clientapp;
         this.playerID = playerID + 1;
-        boardFields = PlanszaFabryka.createLocalBoard(61).constructBoard(this, numberOfPlayers);
+        polaPlanszy = PlanszaFabryka.stworzLokalnaPlansze(61).stworzPlansze(this, numberOfPlayers);
         generateGUI();
     }
 
     //create fields of board on ArrayList
     public void unlockGame() {
-        activityOfBoard = true;
-        selectedPawn = null;
-        movedPawn = null;
+        aktywnyNaPlanszy = true;
+        wybranyPionek = null;
+        ruszonyPionek = null;
         clientapp.stopWaiting();
         if (checkWin()) lockGame();
-        //System.out.println("activity true " + activityOfBoard);
+        //System.out.println("activity true " + aktywnyNaPlanszy);
     }
 
     public void lockGame() {
-        activityOfBoard = false;
+        aktywnyNaPlanszy = false;
         clientapp.startWaiting();
-        //System.out.println("activity false " + activityOfBoard);
+        //System.out.println("activity false " + aktywnyNaPlanszy);
     }
 
-    public Boolean getActivityOfBoard() {
-        //System.out.println("activity return " + activityOfBoard);
-        return activityOfBoard;
+    public Boolean getAktywnyNaPlanszy() {
+        //System.out.println("activity return " + aktywnyNaPlanszy);
+        return aktywnyNaPlanszy;
     }
 
     public Boolean checkWin() {
-        for (PlanszaPola field : boardFields) {
+        for (PlanszaPola field : polaPlanszy) {
             if (field.pionek == playerID && field.winID != playerID) {
                 return false;
             }
@@ -101,12 +100,12 @@ public class InstancjaGry {
         }
 
         //declare positions of fields in gui table
-        for (PlanszaPola i : boardFields) {
-            GridPane.setConstraints(i, i.col, i.row);
+        for (PlanszaPola i : polaPlanszy) {
+            GridPane.setConstraints(i, i.kolumna, i.wiersz);
         }
 
         //add all fields to gui table
-        gridpane.getChildren().addAll(boardFields);
+        gridpane.getChildren().addAll(polaPlanszy);
 
         //set margins of whole table
         gridpane.setPadding(new Insets(30));
@@ -141,7 +140,7 @@ public class InstancjaGry {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Autorzy programu");
-        alert.setContentText("Mikołaj Pietrek, Mateusz Dąbek");
+        alert.setContentText("Albert Piekielny, Patrycja Paradowska");
         alert.show();
     }
 
@@ -150,23 +149,23 @@ public class InstancjaGry {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Skrócona instrukcja");
-        alert.setContentText("Celem gry jest ustawienie wszystkich swoich pionów w przeciwległym promieniu. " +
-                "Podczas tury można poruszyć się jednym pionem na sąsiadujące pole lub przeskoczyć dowolną ilość innych pionów.");
+        alert.setContentText("Celem gry jest ustawienie wszystkich \n swoich pionów w przeciwległym promieniu.\n " +
+                "Podczas tury można poruszyć się jednym pionem \nna sąsiadujące pole lub przeskoczyć dowolną ilość innych pionów.");
         alert.show();
     }
 
     //select or deselect pawn in gui, draw stroke
     public void selectPawn(PlanszaPola pos) {
-        if (selectedPawn != null) {
-            selectedPawn.setStroke(Color.GRAY);
-            selectedPawn.setStrokeWidth(2);
-            moveAndSendPawn(selectedPawn, pos);
-            selectedPawn = null;
+        if (wybranyPionek != null) {
+            wybranyPionek.setStroke(Color.GRAY);
+            wybranyPionek.setStrokeWidth(2);
+            moveAndSendPawn(wybranyPionek, pos);
+            wybranyPionek = null;
         } else {
             if ((pos.pionek) == playerID) {
-                selectedPawn = pos;
-                selectedPawn.setStroke(Color.ORANGE);
-                selectedPawn.setStrokeWidth(5);
+                wybranyPionek = pos;
+                wybranyPionek.setStroke(Color.ORANGE);
+                wybranyPionek.setStrokeWidth(5);
             }
         }
     }
@@ -178,7 +177,7 @@ public class InstancjaGry {
             oldPos.pionek = 0;
             newPos.setFill(KoloryModeli.Kolor.KoloryModeli(newPos.pionek));
             oldPos.setFill(KoloryModeli.Kolor.KoloryModeli(oldPos.pionek));
-            movedPawn = newPos;
+            ruszonyPionek = newPos;
             return true;
         }
         return false;
@@ -196,19 +195,19 @@ public class InstancjaGry {
     public boolean moveAndSendPawn(PlanszaPola oldPos, PlanszaPola newPos) {
         if (testMove(oldPos, newPos)) {
             movePawn(oldPos, newPos);
-            moveRegister.add(Integer.toString(oldPos.col));
-            moveRegister.add(Integer.toString(oldPos.row));
-            moveRegister.add(Integer.toString(newPos.col));
-            moveRegister.add(Integer.toString(newPos.row));
+            moveRegister.add(Integer.toString(oldPos.kolumna));
+            moveRegister.add(Integer.toString(oldPos.wiersz));
+            moveRegister.add(Integer.toString(newPos.kolumna));
+            moveRegister.add(Integer.toString(newPos.wiersz));
             return true;
         }
         return false;
     }
 
-    //return field with specified column and row
+    //return field with specified column and wiersz
     public PlanszaPola findField(int col, int row) {
-        for (PlanszaPola field : boardFields) {
-            if (field.col == col && field.row == row) {
+        for (PlanszaPola field : polaPlanszy) {
+            if (field.kolumna == col && field.wiersz == row) {
                 return field;
             }
         }
@@ -218,52 +217,52 @@ public class InstancjaGry {
     //check correctness of move
     public boolean testMove(PlanszaPola oldPos, PlanszaPola newPos) {
         if (newPos.pionek == 0 && oldPos != newPos) {
-            if (movedPawn == null) {
-                if ((abs(oldPos.col - newPos.col) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
+            if (ruszonyPionek == null) {
+                if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.wiersz - newPos.wiersz) <= 1)) {
                     return true;
                 }
             }
-            if (movedPawn == null || movedPawn == oldPos) {
-                if (oldPos.row == newPos.row) {
+            if (ruszonyPionek == null || ruszonyPionek == oldPos) {
+                if (oldPos.wiersz == newPos.wiersz) {
                     //right
-                    if (newPos.col == oldPos.col + 4) {
-                        if (findField(oldPos.col + 2, oldPos.row).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna + 4) {
+                        if (findField(oldPos.kolumna + 2, oldPos.wiersz).pionek > 0) {
                             return true;
                         }
                     }
                     //left
-                    if (newPos.col == oldPos.col - 4) {
-                        if (findField(oldPos.col - 2, oldPos.row).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna - 4) {
+                        if (findField(oldPos.kolumna - 2, oldPos.wiersz).pionek > 0) {
                             return true;
                         }
                     }
                 }
 
-                if (newPos.row == oldPos.row + 2) {
+                if (newPos.wiersz == oldPos.wiersz + 2) {
                     //right up
-                    if (newPos.col == oldPos.col + 2) {
-                        if (findField(oldPos.col + 1, oldPos.row + 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna + 2) {
+                        if (findField(oldPos.kolumna + 1, oldPos.wiersz + 1).pionek > 0) {
                             return true;
                         }
                     }
                     //left up
-                    if (newPos.col == oldPos.col - 2) {
-                        if (findField(oldPos.col - 1, oldPos.row + 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna - 2) {
+                        if (findField(oldPos.kolumna - 1, oldPos.wiersz + 1).pionek > 0) {
                             return true;
                         }
                     }
                 }
 
-                if (newPos.row == oldPos.row - 2) {
+                if (newPos.wiersz == oldPos.wiersz - 2) {
                     //right down
-                    if (newPos.col == oldPos.col + 2) {
-                        if (findField(oldPos.col + 1, oldPos.row - 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna + 2) {
+                        if (findField(oldPos.kolumna + 1, oldPos.wiersz - 1).pionek > 0) {
                             return true;
                         }
                     }
                     //left down
-                    if (newPos.col == oldPos.col - 2) {
-                        if (findField(oldPos.col - 1, oldPos.row - 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna - 2) {
+                        if (findField(oldPos.kolumna - 1, oldPos.wiersz - 1).pionek > 0) {
                             return true;
                         }
                     }

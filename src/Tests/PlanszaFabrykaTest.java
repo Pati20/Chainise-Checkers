@@ -1,6 +1,6 @@
 package Tests;
 
-import App.Plansza.Plansza61;
+import App.Plansza.PlanszaTyp1;
 import App.Plansza.PlanszaFabryka;
 import org.junit.Test;
 
@@ -11,6 +11,6 @@ public class PlanszaFabrykaTest {
     @Test
     public void createLocalBoard() {
         PlanszaFabryka planszaFabryka = new PlanszaFabryka();
-        assertTrue(planszaFabryka.createLocalBoard(61) instanceof Plansza61);
+        assertTrue(planszaFabryka.stworzLokalnaPlansze(61) instanceof PlanszaTyp1);
     }
 }

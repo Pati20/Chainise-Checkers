@@ -1,12 +1,9 @@
 package Tests;
 
 import App.Plansza.PlanszaPola;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PlanszaPolaTest {
 
@@ -21,16 +18,16 @@ public class PlanszaPolaTest {
     @Test
     public void TestFirstConstructor(){
         Assert.assertEquals(planszaPola.pionek, 20);
-        Assert.assertEquals(planszaPola.col, 5);
-        Assert.assertEquals(planszaPola.row, 10);
+        Assert.assertEquals(planszaPola.kolumna, 5);
+        Assert.assertEquals(planszaPola.wiersz, 10);
         Assert.assertEquals(planszaPola.winID, 1);
     }
 
     @Test
     public void TestSecondConstructor(){
         Assert.assertEquals(planszaPola2.pionek, 20);
-        Assert.assertEquals(planszaPola2.col, 17);
-        Assert.assertEquals(planszaPola2.row, 5);
+        Assert.assertEquals(planszaPola2.kolumna, 17);
+        Assert.assertEquals(planszaPola2.wiersz, 5);
         Assert.assertEquals(planszaPola2.winID, 6);
     }
 

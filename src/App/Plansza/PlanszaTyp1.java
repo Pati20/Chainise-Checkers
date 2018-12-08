@@ -7,23 +7,23 @@ import App.InstancjaGry;
  * Klasa odpowiedzialna za stworzenie planszy o 61 polach
  */
 
-public class Plansza61 extends Plansza {
+public class PlanszaTyp1 extends Plansza {
 
     private ArrayList<PlanszaPola> planszaPola = new ArrayList<>();
 
-    public ArrayList<PlanszaPola> constructBoard(InstancjaGry instancjaGry, int numberOfPlayers) {
+    public ArrayList<PlanszaPola> stworzPlansze(InstancjaGry instancjaGry, int numberOfPlayers) {
         switch (numberOfPlayers) {
             case 2:
-                setPawns(instancjaGry, 1, 0, 0, 2, 0, 0);
+                ustawPionek(instancjaGry, 1, 0, 0, 2, 0, 0);
                 break;
             case 3:
-                setPawns(instancjaGry, 1, 0, 2, 0, 3, 0);
+                ustawPionek(instancjaGry, 1, 0, 2, 0, 3, 0);
                 break;
             case 4:
-                setPawns(instancjaGry, 0, 1, 2, 0, 3, 4);
+                ustawPionek(instancjaGry, 0, 1, 2, 0, 3, 4);
                 break;
             case 6:
-                setPawns(instancjaGry, 1, 2, 3, 4, 5, 6);
+                ustawPionek(instancjaGry, 1, 2, 3, 4, 5, 6);
                 break;
             default:
                 //System.out.println("błąd!");
@@ -35,7 +35,7 @@ public class Plansza61 extends Plansza {
     /**
      * Meotoda odpowiedzilana za ustawienie początkowe pionków na planszy
      */
-    void setPawns(InstancjaGry instancjaGry , int corn1, int corn2, int corn3, int corn4, int corn5, int corn6) {
+    void ustawPionek(InstancjaGry instancjaGry , int corn1, int corn2, int corn3, int corn4, int corn5, int corn6) {
         for (int i = 0; i < 4; i++)
             for (int j = 0; j <= i; j++) {
                 planszaPola.add(new PlanszaPola(instancjaGry, corn1, corn4, (12 + 2 * j - i), i));

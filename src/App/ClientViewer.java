@@ -23,8 +23,8 @@ public class ClientViewer extends Thread {
     List<String> comand = new ArrayList<>();
 
     //Zmienne odpowiedzialne za przebieg gry
-    int clientID = 0;
-    int playerID = 0;
+    int klientID = 0;
+    int graczID = 0;
     int numberOfHuman;
     int numberOfBots;
     int currentPlayerTurn;
@@ -37,6 +37,8 @@ public class ClientViewer extends Thread {
     //reference to client
     ClientApp clientapp;
 
+    public ClientViewer() {
+    }
 
     public ClientViewer(ClientApp clientapp, int nnubmerOfHuman, int nnumberOfBots, boolean hhost, String address) {
         numberOfBots = nnumberOfBots;
@@ -64,9 +66,9 @@ public class ClientViewer extends Thread {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
-            System.out.println("Unknown host: localhost");
+            System.out.println("UnknownHost Exception: localhost");
         } catch (IOException e) {
-            System.out.println("No I/O");
+            System.out.println("Socket Exception: Brak Input/Output");
         }
         System.out.println("Client socket " + socket.getLocalPort());
         conect();
@@ -74,16 +76,16 @@ public class ClientViewer extends Thread {
 
     public void conect() {
         out.println("CONECT");
-        System.out.println("clientID " + clientID + " conect ");
+        System.out.println("klientID " + klientID + " conect ");
         try {
             while (input.equals("")) {
                 input = in.readLine();
             }
             //CLIENTID
             comand = parserOfCommand(input);
-            if (clientID == 0) {
-                clientID = parseInt(comand.get(0));
-                System.out.println("client clientID " + clientID);
+            if (klientID == 0) {
+                klientID = parseInt(comand.get(0));
+                System.out.println("client klientID " + klientID);
                 socket = new Socket(address, parseInt(comand.get(1)));
                 System.out.println("Client client id " + comand.get(0) + "  port  " + parseInt(comand.get(1)) + " ustawiono " + socket.getLocalPort());
             }
@@ -102,23 +104,21 @@ public class ClientViewer extends Thread {
 
     public void begin() {
         System.out.println("BEGIN CLIENT");
-        out.println("BEGIN" + " " + clientID + " " + numberOfHuman + " " + numberOfBots);
+        out.println("BEGIN" + " " + klientID + " " + numberOfHuman + " " + numberOfBots);
         try {
             input = "";
             while (input.equals("")) {
                 input = in.readLine();
                 if (input.equals("")) continue;
-                //CLIENTID + BOARD_ON_SERVER_ID + COLOR
                 comand = parserOfCommand(input);
-                if (parseInt(comand.get(0)) == clientID) {
+                if (parseInt(comand.get(0)) == klientID) {
                     witchBoardOnServer = parseInt(comand.get(1));
-                    //color = colorClass.color(parseInt(comand.get(2)));
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        out.println("START " + clientID);
+        out.println("START " + klientID);
         this.start();
     }
 
@@ -134,10 +134,10 @@ public class ClientViewer extends Thread {
                 comand = parserOfCommand(input);
                 System.out.println(comand);
                 if ((comand.get(0).equals("START"))) {
-                    System.out.println("CLIENT START " + clientID + " : " + input);
+                    System.out.println("CLIENT START " + klientID + " : " + input);
                     numberOfHuman = parseInt(comand.get(1));
                     numberOfBots = parseInt(comand.get(2));
-                    clientapp.startLocalGame(playerID, numberOfHuman + numberOfBots);
+                    clientapp.startLocalGame(graczID, numberOfHuman + numberOfBots);
                     game();
                     break;
                 } else {
@@ -152,7 +152,6 @@ public class ClientViewer extends Thread {
 
     }
 
-    ///////////////////////////////////////////XROBIC ZROBIC///////////////////////////////////////////////////////////////
     public void getGames() {
         out.println("GETGAMES");
         int conectBoardID = 0;
@@ -161,7 +160,7 @@ public class ClientViewer extends Thread {
             input = "";
             while (input.equals("") && activityOfClient) {
                 input = in.readLine();
-                comand = parserOfCommand(input); //BOARD_ID + NUMBER_OF._CURRENT_PLAYERS + FINAL_NUMBER_OF_PLAYERS + NUMBER_OF_BOTS
+                comand = parserOfCommand(input);
                 if ((comand.size() > 3))
                     if ((comand.get(0).equals("BOARDS"))) {
                         /*
@@ -169,7 +168,7 @@ public class ClientViewer extends Thread {
                         System.out.println("get games " + input);
                         conectBoardID = parseInt(comand.get(1));
                         cclientIDOnBoard = parseInt(comand.get(2)) + parseInt(comand.get(4));
-                        conectToGame(conectBoardID, cclientIDOnBoard); //cclientIDOnBoard = numberOfBots + numberOfConectedPlayers
+                        conectToGame(conectBoardID, cclientIDOnBoard);
                         break;
                     } else {
                         input = "";
@@ -186,10 +185,10 @@ public class ClientViewer extends Thread {
     }
 
     public void conectToGame(int conectBoardID, int cclientIDOnBoard) {
-        this.playerID = cclientIDOnBoard;
+        this.graczID = cclientIDOnBoard;
         this.witchBoardOnServer = conectBoardID;
-        System.out.println("conect to " + witchBoardOnServer + " " + playerID);
-        out.println("CONECTTOGAME " + clientID + " " + conectBoardID);
+        System.out.println("conect to " + witchBoardOnServer + " " + graczID);
+        out.println("CONECTTOGAME " + klientID + " " + conectBoardID);
 
         this.start();
 
@@ -202,7 +201,7 @@ public class ClientViewer extends Thread {
 
     public void game() {
         JFrame dialog;
-        out.println("GAMEREADY " + clientID);
+        out.println("GAMEREADY " + klientID);
         System.out.println("client start game już w game");
         try {
             input = "";
@@ -215,7 +214,7 @@ public class ClientViewer extends Thread {
                         System.out.println("client YOURTURN");
                         clientapp.instancjaGry.unlockGame();
                         System.out.println("client AFTER UNLOCK");
-                        while (clientapp.instancjaGry.getActivityOfBoard() && activityOfClient) {
+                        while (clientapp.instancjaGry.getAktywnyNaPlanszy() && activityOfClient) {
                             try {
                                 Thread.sleep(250);
                                 //System.out.println("oczekiwanie ");
@@ -262,7 +261,6 @@ public class ClientViewer extends Thread {
                         break;
 
                     case "MOVEDECLINED":
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         //      dialog = new DialogWindow("INCORRECT MOVE");
                         break;
                     case "YOUWON":

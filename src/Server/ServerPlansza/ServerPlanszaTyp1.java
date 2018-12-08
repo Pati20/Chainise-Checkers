@@ -2,7 +2,7 @@ package Server.ServerPlansza;
 
 import java.util.ArrayList;
 
-public class ServerPlansza61 extends ServerPlansza{
+public class ServerPlanszaTyp1 extends ServerPlansza{
 
     public ArrayList<ServerPlanszaPola> serverPlanszaPola = new ArrayList<>();
     int playerID;

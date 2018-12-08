@@ -12,30 +12,30 @@ import javafx.scene.shape.StrokeType;
  */
 public class PlanszaPola extends Circle {
     public int pionek;
-    public int col;
-    public int row;
+    public int kolumna;
+    public int wiersz;
     public int winID;
     InstancjaGry instancjaGry;
     private PlanszaPola tempRef;
     private int buffer;
 
-    public PlanszaPola(int id, int winID, int col, int row) {
+    public PlanszaPola(int id, int winID, int kolumna, int wiersz) {
         pionek = id;
 
         this.instancjaGry = instancjaGry;
-        this.col = col;
-        this.row = row;
+        this.kolumna = kolumna;
+        this.wiersz = wiersz;
         this.winID = winID;
 
         tempRef = this;
     }
 
-    public PlanszaPola(InstancjaGry instancjaGry, int id, int winID, int col, int row) {
+    public PlanszaPola(InstancjaGry instancjaGry, int id, int winID, int kolumna, int wiersz) {
         pionek = id;
 
         this.instancjaGry = instancjaGry;
-        this.col = col;
-        this.row = row;
+        this.kolumna = kolumna;
+        this.wiersz = wiersz;
         this.winID = winID;
 
         tempRef = this;

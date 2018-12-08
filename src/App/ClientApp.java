@@ -13,6 +13,9 @@ import javafx.stage.Stage;
 
 import static javafx.geometry.Pos.CENTER;
 
+/**
+ * Klasa odpowiedzialna za okno łącznia oraz pośrednio za uruchamianie gry
+ */
 public class ClientApp extends Application {
 
     InstancjaGry instancjaGry;
@@ -22,17 +25,13 @@ public class ClientApp extends Application {
     private CheckBox checkbox2[] = new CheckBox[6];
     private int players, boot;
     public ClientViewer clientCommunicator;
-    TextField addressField;
+    TextField adres;
 
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     public boolean checkPlayersNumber(Integer numberOfHuman, Integer numberOfBots) {
         int sum = numberOfHuman + numberOfBots;
         if (sum == 2 || sum == 3 || sum == 4 || sum == 6) {
-            //startGame(numberOfHuman.intValue(), numberOfBots.intValue());
+            startGame(numberOfHuman, numberOfBots);
             return true;
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -45,6 +44,11 @@ public class ClientApp extends Application {
         }
     }
 
+    /**
+     * Metoda opowiedzialna za sprawdzanie jakie opcje wybrał gracz do uruchomienia gry:
+     * @param number- liczba botów/liczba graczy
+     * @param table - table odnosi sie do checkbox1 i checkbox1
+     */
     void setCheckBoxNotSelected(int number, int table) {
         CheckBox temp[];
         if (table == 1) {
@@ -62,49 +66,50 @@ public class ClientApp extends Application {
         System.out.println(number);
     }
 
-    public void setPlayers(int players) {
-        this.players = players;
-    }
+    public void setPlayers(int players) { this.players = players; }
 
-    public void setBoot(int boot) {
-        this.boot = boot;
-    }
+    public void setBoot(int boot) { this.boot = boot; }
 
-    public int getPlayers() {
-        return players;
-    }
+    public int getPlayers() { return players; }
 
-    public int getBoot() {
-        return boot;
-    }
+    public int getBoot() { return boot; }
 
 
-    //dopracować
+    /**
+     * Metoda odpowiedzialna za uruchomienie gry
+     * @param numberOfHuman - przekazujemy liczbę osób grających
+     * @param numberOfBots - oraz liczbę botów
+     */
     public void startGame(int numberOfHuman, int numberOfBots) {
-        // startLocalGame(playerID, numberOfHuman+numberOfBots);
         startPlayersWaiting();
-        clientCommunicator = new ClientViewer(this, numberOfHuman, numberOfBots, true, addressField.getText());
+        clientCommunicator = new ClientViewer(this, numberOfHuman, numberOfBots, true, adres.getText());
     }
 
+    /**
+     * Metoda odpowiedzialna za dołącznie do istniejącej już gry
+     */
     public void joinGame() {
-        clientCommunicator = new ClientViewer(this, 0, 0, false, addressField.getText());
+        clientCommunicator = new ClientViewer(this, 0, 0, false, adres.getText());
     }
 
     void startLocalGame(int playerID, int numberOfPlayers) {
-        //    gameInstance = new GameInstance(this, playerID, numberOfPlayers);
+        instancjaGry = new InstancjaGry(this, playerID, numberOfPlayers);
         Platform.runLater(new Runnable() {
             public void run() {
-                //   gameScene = new Scene(gameInstance.vbox, 500, 544);
+                gameScene = new Scene(instancjaGry.vbox, 500, 544);
                 mainWindow.setScene(waitScene);
                 mainWindow.setMinHeight(634);
                 mainWindow.setMinWidth(600);
                 mainWindow.setMaxHeight(834);
                 mainWindow.setMaxWidth(800);
-                System.out.println("abcd");
+                System.out.println("Rozpoczęto lokalną grę.");
             }
         });
     }
 
+    /**
+     * Metoda, uruchamiana w momencie kiedy dany gracz zakączył swój ruch
+     */
     public void startPlayersWaiting() {
         Platform.runLater(new Runnable() {
             public void run() {
@@ -138,19 +143,22 @@ public class ClientApp extends Application {
     }
 
     public boolean onExit() {
-
         try {
             clientCommunicator.activityOfClient = false;
             clientCommunicator.terminateServer();
             clientCommunicator.interrupt();
         } catch (Exception e) {
-            System.out.println("Ten klient nie rozpoczal komunikacji z serwerem");
+            System.out.println("Kliient nie połączył się z serwerem");
             return true;
         }
         Platform.exit();
         return false;
     }
 
+    /**
+     * Główna obsługa okienek pojawijących się w grze
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage) {
         mainWindow = primaryStage;
@@ -175,19 +183,19 @@ public class ClientApp extends Application {
         HBox hboxOfBoot = new HBox(8);
         hboxOfBoot.getChildren().addAll(checkbox2);
 
-        Button button1 = new Button("Utwórz nową grę");
+        Button button1 = new Button("Nowa gra");
         button1.setOnMouseClicked(event -> checkPlayersNumber(getPlayers(), getBoot()));
 
         Label label3 = new Label("Adres serwera");
-        addressField = new TextField();
-        addressField.setText("localhost");
+        adres = new TextField();
+        adres.setText("localhost");
 
-        Button button2 = new Button("Dołącz do trwającej gry");
-        // button2.setOnMouseClicked(event -> joinGame());
+        Button button2 = new Button("Dołącz istniejącej rozgrywki");
+         button2.setOnMouseClicked(event -> joinGame());
 
-        vbox.getChildren().addAll(label3, addressField, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, button1, new Separator(), button2);
+        vbox.getChildren().addAll(label3, adres, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, button1, new Separator(), button2);
 
-        Label playersWaitLabel = new Label("trwa\ndołączanie\ngraczy");
+        Label playersWaitLabel = new Label("Trwa\ndołączanie\ngraczy");
         playersWaitLabel.setFont(Font.font("Verdana", 30));
         playersWaitLabel.setTextAlignment(TextAlignment.CENTER);
         playersWaitLabel.setAlignment(CENTER);
@@ -199,7 +207,7 @@ public class ClientApp extends Application {
         waitLabel.setAlignment(CENTER);
         waitScene = new Scene(waitLabel, 500, 544);
 
-        Label winLabel = new Label("Gratulacje, udało się");
+        Label winLabel = new Label("Wygrałeś! Gratulacje.");
         winLabel.setFont(Font.font("Verdana", 30));
         winLabel.setTextAlignment(TextAlignment.CENTER);
         winLabel.setAlignment(CENTER);
@@ -213,5 +221,4 @@ public class ClientApp extends Application {
         mainWindow.setMaxWidth(300);
         mainWindow.show();
     }
-
 }

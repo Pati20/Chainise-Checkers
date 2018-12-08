@@ -10,16 +10,16 @@ import Server.StaraPlansza;
 
 public class Bot extends Gracz {
 
-    int numberOfPlayers;
+    int liczbaGraczy;
     int ID;
-    int corner;
+    int narożnik;
     StaraPlansza plansza;
 
-    public Bot(int nnumber, int numberOfPlayers,StaraPlansza plansza) {
-        super(nnumber, numberOfPlayers,plansza);
-        this.numberOfPlayers = numberOfPlayers;
+    public Bot(int nnumber, int liczbaGraczy, StaraPlansza plansza) {
+        super(nnumber, liczbaGraczy,plansza);
+        this.liczbaGraczy = liczbaGraczy;
         this.ID = nnumber;
-        this.corner = ID+1;
+        this.narożnik = ID+1;
         this.plansza = plansza;
         bot = true;
 
@@ -28,7 +28,7 @@ public class Bot extends Gracz {
     public List<Pionek> setMyPawns(StaraPlansza plansza){
         List<Pionek> pawn = new ArrayList<>();
         for(ServerPlanszaPola field : plansza.localboard.serverBoardFields){
-            if(field.pionek == corner) pawn.add(new Pionek(field.col, field.row));
+            if(field.pionek == narożnik) pawn.add(new Pionek(field.kolumna, field.row));
         }
 
         return pawn;
@@ -37,7 +37,7 @@ public class Bot extends Gracz {
     public List<Pionek> setMyPawnsWin(StaraPlansza plansza){
         List<Pionek> pawn = new ArrayList<>();
         for( ServerPlanszaPola field : plansza.localboard.serverBoardFields){
-            if(field.winID == corner) pawn.add(new Pionek(field.col, field.row));
+            if(field.winID == narożnik) pawn.add(new Pionek(field.kolumna, field.row));
         }
 
         return pawn;

@@ -49,7 +49,7 @@ public abstract class ServerPlansza {
      */
     public ServerPlanszaPola findField(int col, int row) {
         for (ServerPlanszaPola field : serverBoardFields) {
-            if (field.col == col && field.row == row) {
+            if (field.kolumna == col && field.row == row) {
                 return field;
             }
         }
@@ -64,22 +64,22 @@ public abstract class ServerPlansza {
     public boolean testMove(ServerPlanszaPola oldPos, ServerPlanszaPola newPos) {
         if (newPos.pionek == 0) {
             if (true) {
-                if ((abs(oldPos.col - newPos.col) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
-                    //activityOfBoard=false;
+                if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
+                    //aktywnyNaPlanszy=false;
                     return true;
                 }
             }
             if (true) {
                 if (oldPos.row == newPos.row) {
                     //right
-                    if (newPos.col == oldPos.col + 4) {
-                        if (findField(oldPos.col + 2, oldPos.row).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna + 4) {
+                        if (findField(oldPos.kolumna + 2, oldPos.row).pionek > 0) {
                             return true;
                         }
                     }
                     //left
-                    if (newPos.col == oldPos.col - 4) {
-                        if (findField(oldPos.col - 2, oldPos.row).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna - 4) {
+                        if (findField(oldPos.kolumna - 2, oldPos.row).pionek > 0) {
                             return true;
                         }
                     }
@@ -87,14 +87,14 @@ public abstract class ServerPlansza {
 
                 if (newPos.row == oldPos.row + 2) {
                     //right up
-                    if (newPos.col == oldPos.col + 2) {
-                        if (findField(oldPos.col + 1, oldPos.row + 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna + 2) {
+                        if (findField(oldPos.kolumna + 1, oldPos.row + 1).pionek > 0) {
                             return true;
                         }
                     }
                     //left up
-                    if (newPos.col == oldPos.col - 2) {
-                        if (findField(oldPos.col - 1, oldPos.row + 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna - 2) {
+                        if (findField(oldPos.kolumna - 1, oldPos.row + 1).pionek > 0) {
                             return true;
                         }
                     }
@@ -102,14 +102,14 @@ public abstract class ServerPlansza {
 
                 if (newPos.row == oldPos.row - 2) {
                     //right down
-                    if (newPos.col == oldPos.col + 2) {
-                        if (findField(oldPos.col + 1, oldPos.row - 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna + 2) {
+                        if (findField(oldPos.kolumna + 1, oldPos.row - 1).pionek > 0) {
                             return true;
                         }
                     }
                     //left down
-                    if (newPos.col == oldPos.col - 2) {
-                        if (findField(oldPos.col - 1, oldPos.row - 1).pionek > 0) {
+                    if (newPos.kolumna == oldPos.kolumna - 2) {
+                        if (findField(oldPos.kolumna - 1, oldPos.row - 1).pionek > 0) {
                             return true;
                         }
                     }
