@@ -5,9 +5,9 @@ import javafx.scene.paint.Color;
 
 
 public class Człowiek extends Gracz {
-    int playerIDOnBoard;
-    int clientID;
-    Color color;
+    private int playerIDOnBoard;
+    private int clientID;
+    private Color color;
 
     public Człowiek(int cclientID, int pplayerIDOnBoard, Color ccolor) {
         super(cclientID, pplayerIDOnBoard, ccolor);
@@ -16,7 +16,6 @@ public class Człowiek extends Gracz {
         this.clientID = cclientID;
         System.out.println("HUMAN cclietnID " + clientID);
         bot = false;
-
     }
 
 

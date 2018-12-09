@@ -3,13 +3,18 @@ package App;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import static javafx.geometry.Pos.CENTER;
 
@@ -27,7 +32,12 @@ public class ClientApp extends Application {
     public ClientViewer clientCommunicator;
     TextField adres;
 
-
+    /**
+     * Metoda odpowiedzlna za sprawdzanie poprawnej liczby graczy
+     * @param numberOfHuman - liczba graczy
+     * @param numberOfBots - liczba botów
+     * @return true/false
+     */
     public boolean checkPlayersNumber(Integer numberOfHuman, Integer numberOfBots) {
         int sum = numberOfHuman + numberOfBots;
         if (sum == 2 || sum == 3 || sum == 4 || sum == 6) {
@@ -49,7 +59,7 @@ public class ClientApp extends Application {
      * @param number- liczba botów/liczba graczy
      * @param table - table odnosi sie do checkbox1 i checkbox1
      */
-    void setCheckBoxNotSelected(int number, int table) {
+    private void setCheckBoxNotSelected(int number, int table) {
         CheckBox temp[];
         if (table == 1) {
             temp = checkbox1;
@@ -57,13 +67,13 @@ public class ClientApp extends Application {
         } else {
             temp = checkbox2;
             setBoot(number);
+            number++;
         }
         for (int i = 0; i < 6; i++) {
             if (i == number - 1) continue;
             temp[i].setSelected(false);
 
         }
-        System.out.println(number);
     }
 
     public void setPlayers(int players) { this.players = players; }
@@ -96,12 +106,22 @@ public class ClientApp extends Application {
         instancjaGry = new InstancjaGry(this, playerID, numberOfPlayers);
         Platform.runLater(new Runnable() {
             public void run() {
+                BackgroundImage myBI= null;
+                try {
+                    myBI = new BackgroundImage(new Image(new FileInputStream("Fotos/tlo.png")),
+                            BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                            BackgroundSize.DEFAULT);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                instancjaGry.vbox.setBackground(new Background(myBI));
                 gameScene = new Scene(instancjaGry.vbox, 500, 544);
                 mainWindow.setScene(waitScene);
                 mainWindow.setMinHeight(634);
                 mainWindow.setMinWidth(600);
                 mainWindow.setMaxHeight(834);
                 mainWindow.setMaxWidth(800);
+                mainWindow.setResizable(false);
                 System.out.println("Rozpoczęto lokalną grę.");
             }
         });
@@ -160,7 +180,7 @@ public class ClientApp extends Application {
      * @param primaryStage
      */
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
         mainWindow = primaryStage;
         mainWindow.setTitle("Chińskie warcaby ");
         mainWindow.setOnCloseRequest(e -> onExit());
@@ -173,10 +193,11 @@ public class ClientApp extends Application {
 
         for (int i = 0; i < 6; i++) {
             int j = i + 1;
+            int k = i;
             checkbox1[i] = new CheckBox("" + (i + 1));
             checkbox1[i].setOnMouseClicked(event -> setCheckBoxNotSelected(j, 1));
-            checkbox2[i] = new CheckBox("" + (i + 1));
-            checkbox2[i].setOnMouseClicked(event -> setCheckBoxNotSelected(j, 2));
+            checkbox2[i] = new CheckBox("" + (i));
+            checkbox2[i].setOnMouseClicked(event -> setCheckBoxNotSelected(k, 2));
         }
         HBox hboxOfPlayers = new HBox(8);
         hboxOfPlayers.getChildren().addAll(checkbox1);
@@ -184,28 +205,30 @@ public class ClientApp extends Application {
         hboxOfBoot.getChildren().addAll(checkbox2);
 
         Button button1 = new Button("Nowa gra");
+        //button1.set
         button1.setOnMouseClicked(event -> checkPlayersNumber(getPlayers(), getBoot()));
 
         Label label3 = new Label("Adres serwera");
         adres = new TextField();
         adres.setText("localhost");
 
-        Button button2 = new Button("Dołącz istniejącej rozgrywki");
-         button2.setOnMouseClicked(event -> joinGame());
+        Button button2 = new Button("Dołącz do gry");
+        button2.setOnMouseClicked(event -> joinGame());
 
-        vbox.getChildren().addAll(label3, adres, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, button1, new Separator(), button2);
+        HBox hBox3 = new HBox(10);
+        hBox3.getChildren().addAll(button1,button2);
 
-        Label playersWaitLabel = new Label("Trwa\ndołączanie\ngraczy");
-        playersWaitLabel.setFont(Font.font("Verdana", 30));
-        playersWaitLabel.setTextAlignment(TextAlignment.CENTER);
-        playersWaitLabel.setAlignment(CENTER);
-        playersWaitScene = new Scene(playersWaitLabel, 300, 450);
+        vbox.getChildren().addAll(label3, adres, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, new Separator(),hBox3);
 
-        Label waitLabel = new Label("Trwa oczekiwanie \nna pozostałych graczy");
-        waitLabel.setFont(Font.font("Verdana", 30));
-        waitLabel.setTextAlignment(TextAlignment.CENTER);
-        waitLabel.setAlignment(CENTER);
-        waitScene = new Scene(waitLabel, 500, 544);
+        Image image = new Image(new FileInputStream("Fotos/Doloczanie graczy.png"));
+        ImageView imageView = new ImageView(image);
+        Group root = new Group(imageView);
+        playersWaitScene = new Scene(root, 400, 450);
+
+        Image image2 = new Image(new FileInputStream("Fotos/Oczekiwanie_na_graczy.png"));
+        ImageView imageView2 = new ImageView(image2);
+        Group root2 = new Group(imageView2);
+        waitScene = new Scene(root2, 500, 544);
 
         Label winLabel = new Label("Wygrałeś! Gratulacje.");
         winLabel.setFont(Font.font("Verdana", 30));
@@ -213,12 +236,13 @@ public class ClientApp extends Application {
         winLabel.setAlignment(CENTER);
         winScene = new Scene(winLabel, 500, 544);
 
-        startScene = new Scene(vbox, 300, 450);
+
+        startScene = new Scene(vbox, 400, 400);
         mainWindow.setScene(startScene);
-        mainWindow.setMinHeight(450);
-        mainWindow.setMinWidth(300);
-        mainWindow.setMaxHeight(450);
-        mainWindow.setMaxWidth(300);
+        mainWindow.setMinHeight(400);
+        mainWindow.setMinWidth(400);
+        mainWindow.setMaxHeight(400);
+        mainWindow.setMaxWidth(400);
         mainWindow.show();
     }
 }

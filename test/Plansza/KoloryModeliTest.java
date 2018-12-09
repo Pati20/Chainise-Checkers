@@ -1,4 +1,4 @@
-package Tests;
+package Tests.Plansza;
 
 import App.Plansza.KoloryModeli;
 import javafx.scene.paint.Color;

@@ -25,7 +25,6 @@ public class Gracz {
         this.playerIDOnBoard = nnumber;
         this.clientID = cclientID;
         System.out.println("HUMAN cclietnID " + clientID);
-
     }
 
     /**

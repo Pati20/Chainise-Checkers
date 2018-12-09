@@ -10,12 +10,12 @@ import static java.lang.Math.abs;
 
 public class BotGame extends Bot {
 
-    int ID;
-    int numberOfPlayers;
-    int corner;
-    StaraPlansza plansza;
-    List<Pionek> pawn;
-    List<Pionek> win;
+    private int ID;
+    private int numberOfPlayers;
+    private int corner;
+    private StaraPlansza plansza;
+    private List<Pionek> pawn;
+    private List<Pionek> win;
 
     public BotGame(int nnumber, int numberOfPlayers, StaraPlansza plansza) {
         super(nnumber, numberOfPlayers, plansza);

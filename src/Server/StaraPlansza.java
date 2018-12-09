@@ -13,28 +13,28 @@ import java.util.List;
 
 
 public class StaraPlansza {
-    public int boardID;
-    public int playerIDHost;
-    public int currentHumanCount = 0;
+    public int planszaID;
+    public int graczIDHost;
+    public int licznikLudzi = 0;
     public int numberOfHumans;
     public int numberOfBost;
     public List<Gracz> players = new ArrayList<>();
     public ClientApp client;
     public int numberOfPlayers;
-    public int currentPlayerTurn = 0;
+    public int pbecnaTuraGracza = 0;
     public ServerPlansza localboard;
-    public Boolean gameReady = false;
+    public Boolean gotowaGra = false;
 
 
     //CONSTRUCTOR FOR SERVER
     public StaraPlansza(int bboardID, int pplayerID, int nnumberOfHuans, int nnumberOfBots) {
-        this.boardID = bboardID;
-        this.playerIDHost = pplayerID;
-        this.currentHumanCount++;
+        this.planszaID = bboardID;
+        this.graczIDHost = pplayerID;
+        this.licznikLudzi++;
         this.numberOfHumans = nnumberOfHuans;
         this.numberOfBost = nnumberOfBots;
         this.numberOfPlayers = numberOfHumans+numberOfBost;
-        players.add(new Człowiek(pplayerID,players.size(), KoloryModeli.Kolor.KoloryModeli(currentHumanCount-1)));
+        players.add(new Człowiek(pplayerID,players.size(), KoloryModeli.Kolor.KoloryModeli(licznikLudzi -1)));
         for(int i=1;i <= numberOfBost;i++){
             players.add(new BotGame(i,numberOfPlayers,this));        }
     }
@@ -49,7 +49,7 @@ public class StaraPlansza {
 
 
     public void newPlayerConected(int pplayerID) {
-        currentHumanCount++;
+        licznikLudzi++;
         players.add(new Człowiek(pplayerID, players.size(), KoloryModeli.Kolor.KoloryModeli(players.size())));
     }
 }

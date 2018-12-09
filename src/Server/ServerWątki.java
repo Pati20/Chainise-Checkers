@@ -16,7 +16,7 @@ import static java.lang.Integer.parseInt;
 
 
 public class ServerWątki extends Thread {
-    public Server serverSide;
+    public Server server;
     public int clientID;
     public Socket client = null;
     public int port = 0;
@@ -35,7 +35,7 @@ public class ServerWątki extends Thread {
             System.out.println("NoT ACDEPTED OR CANNOT MAKE THREAT SOSCKET ON PORT: " + port);
         }
         this.clientID = clientNumber;
-        this.serverSide = sserverSide;
+        this.server = sserverSide;
 
     }
 
@@ -52,8 +52,6 @@ public class ServerWątki extends Thread {
                 line = in.readLine();
                 System.out.println("LISTEN: " + line);
                 out.println(DoSomething(line));
-                ///!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!//
-                //line = null;
             } catch (IOException e) {
                 System.out.println("Read failed " + clientID);
                 line = null;
@@ -74,28 +72,28 @@ public class ServerWątki extends Thread {
 
                 break;
 
-            case "BEGIN"://BEGIN + CLIENT_ID + NUMBER_OF_HUMANS + NUMBER_OF_BOTS
+            case "BEGIN":
                 witch = addNewBoard(parseInt(comand.get(1)), parseInt(comand.get(2)), parseInt(comand.get(3)));
                 boardID = witch;
-                System.out.println("server human cclietnID " + serverSide.boards.get(boardID).players.get(0).clientID + " : " + serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).clientID);
+                System.out.println("server human cclietnID " + server.boards.get(boardID).players.get(0).clientID + " : " + server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID);
                 response = comand.get(1) + " " + boardID + " " + 0;
                 break;
 
             case "GETGAMES"://GETGAMES + CLIENT_ID + BOARD_ID
-                for (StaraPlansza b : serverSide.boards) {
-                    if (b.numberOfHumans != b.currentHumanCount)
+                for (StaraPlansza b : server.boards) {
+                    if (b.numberOfHumans != b.licznikLudzi)
                         if (response.equals(""))
-                            response = "BOARDS " + b.boardID + " " + b.currentHumanCount + " " + b.numberOfHumans + " " + b.numberOfBost;
+                            response = "BOARDS " + b.planszaID + " " + b.licznikLudzi + " " + b.numberOfHumans + " " + b.numberOfBost;
                         else
-                            response = response + " " + b.boardID + " " + b.currentHumanCount + " " + b.numberOfHumans + " " + b.numberOfBost;
+                            response = response + " " + b.planszaID + " " + b.licznikLudzi + " " + b.numberOfHumans + " " + b.numberOfBost;
                 }
 
                 break;
 
             case "START": //START + CLIENT_ID + BOARD_ID
-                if (serverSide.boards.get(boardID).numberOfHumans == serverSide.boards.get(boardID).currentHumanCount) {
-                    serverSide.boards.get(boardID).boardGenerateServer();
-                    response = "START " + serverSide.boards.get(boardID).numberOfHumans + " " + serverSide.boards.get(boardID).numberOfBost;
+                if (server.boards.get(boardID).numberOfHumans == server.boards.get(boardID).licznikLudzi) {
+                    server.boards.get(boardID).boardGenerateServer();
+                    response = "START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost;
                 } else {
                     response = "STOP" + " " + comand.get(1);
                 }
@@ -103,41 +101,41 @@ public class ServerWątki extends Thread {
                 break;
 
             case "GAMEREADY":
-                System.out.println("server gamerdy " + clientID + "    " + serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).clientID);
-                if (clientID == serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).clientID) {
+                System.out.println("server gamerdy " + clientID + "    " + server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID);
+                if (clientID == server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID) {
                     response = "YOURTURN " + clientID;
                     System.out.println("server yourturn " + clientID);
                 }
 
                 break;
 
-            case "CONECTTOGAME"://CONECT + CLIENT_ID + BOARD_ID(od 0)
+            case "CONECTTOGAME":
                 boardID = parseInt(comand.get(2));
                 System.out.println("SERVER NEW BOARD ID " + boardID);
-                serverSide.boards.get(boardID).newPlayerConected(parseInt(comand.get(1)));
+                server.boards.get(boardID).newPlayerConected(parseInt(comand.get(1)));
 
-                if (serverSide.boards.get(boardID).numberOfHumans == serverSide.boards.get(boardID).currentHumanCount) {
-                    for (ServerWątki t : serverSide.threadServer) {
+                if (server.boards.get(boardID).numberOfHumans == server.boards.get(boardID).licznikLudzi) {
+                    for (ServerWątki t : server.threadServer) {
                         if (t.boardID == boardID) {
                             if (t.clientID == clientID)
-                                response = "START " + serverSide.boards.get(boardID).numberOfHumans + " " + serverSide.boards.get(boardID).numberOfBost;
+                                response = "START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost;
                             else {
-                                t.out.println("START " + serverSide.boards.get(boardID).numberOfHumans + " " + serverSide.boards.get(boardID).numberOfBost);
+                                t.out.println("START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost);
                             }
                         }
                     }
-                    serverSide.boards.get(boardID).boardGenerateServer();
+                    server.boards.get(boardID).boardGenerateServer();
                 }
 
                 break;
 
-            case "ENDTURN": //ROUNDEND + MOVES
+            case "ENDTURN":
                 Boolean correctMove = true;
                 Boolean botTurn = true;
 
                 if (!comand.get(1).equals("PASS"))
                     for (int i = 1; i < comand.size(); i = i + 4) {
-                        if (!serverSide.boards.get(boardID).localboard.testMove(serverSide.boards.get(boardID).localboard.findField(parseInt(comand.get(i)), parseInt(comand.get(i + 1))), serverSide.boards.get(boardID).localboard.findField(parseInt(comand.get(i + 2)), parseInt(comand.get(i + 3))))) {
+                        if (!server.boards.get(boardID).localboard.testMove(server.boards.get(boardID).localboard.findField(parseInt(comand.get(i)), parseInt(comand.get(i + 1))), server.boards.get(boardID).localboard.findField(parseInt(comand.get(i + 2)), parseInt(comand.get(i + 3))))) {
                             correctMove = false;
                             break;
                         }
@@ -146,18 +144,18 @@ public class ServerWątki extends Thread {
                 if (correctMove) {
 
                     if (!comand.get(1).equals("PASS"))
-                        serverSide.boards.get(boardID).localboard.movePawnServer(serverSide.boards.get(boardID).localboard.findField(parseInt(comand.get(1)), parseInt(comand.get(2))), serverSide.boards.get(boardID).localboard.findField(parseInt(comand.get(comand.size() - 2)), parseInt(comand.get(comand.size() - 1))));
+                        server.boards.get(boardID).localboard.movePawnServer(server.boards.get(boardID).localboard.findField(parseInt(comand.get(1)), parseInt(comand.get(2))), server.boards.get(boardID).localboard.findField(parseInt(comand.get(comand.size() - 2)), parseInt(comand.get(comand.size() - 1))));
 
-                    if (serverSide.boards.get(boardID).currentPlayerTurn + 1 < serverSide.boards.get(boardID).numberOfPlayers)
-                        serverSide.boards.get(boardID).currentPlayerTurn++;
+                    if (server.boards.get(boardID).pbecnaTuraGracza + 1 < server.boards.get(boardID).numberOfPlayers)
+                        server.boards.get(boardID).pbecnaTuraGracza++;
                     else
-                        serverSide.boards.get(boardID).currentPlayerTurn = 0;
+                        server.boards.get(boardID).pbecnaTuraGracza = 0;
 
-                    System.out.println("server current player ID " + serverSide.boards.get(boardID).currentPlayerTurn);
+                    System.out.println("server current player ID " + server.boards.get(boardID).pbecnaTuraGracza);
 
-                    serverSide.boards.get(boardID).localboard.setPlayerID(serverSide.boards.get(boardID).currentPlayerTurn);
+                    server.boards.get(boardID).localboard.setPlayerID(server.boards.get(boardID).pbecnaTuraGracza);
 
-                    for (ServerWątki t : serverSide.threadServer) {
+                    for (ServerWątki t : server.threadServer) {
                         if (t.boardID == boardID) {
                             if (t.clientID == clientID)
                                 out.println("MOVEACCEPTED");
@@ -166,8 +164,8 @@ public class ServerWątki extends Thread {
                             else
                                 t.out.println("MOVE " + comand.get(1) + " " + comand.get(2) + " " + comand.get(comand.size() - 2) + " " + comand.get(comand.size() - 1));
 
-                            if (!serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).bot)
-                                if (t.clientID == serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).clientID) {
+                            if (!server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).bot)
+                                if (t.clientID == server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID) {
                                     t.out.println("YOURTURN");
                                     System.out.println("Yourturn " + t.clientID);
                                 }
@@ -177,7 +175,7 @@ public class ServerWątki extends Thread {
 
 
                     }
-                    while (serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).bot)
+                    while (server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).bot)
                         botMove();
 
                     System.out.println("server moves itp " + comand);
@@ -187,7 +185,7 @@ public class ServerWątki extends Thread {
                 break;
 
 
-            case "DISCONECT"://DISCONECT + CLIENT_ID
+            case "DISCONECT":
                 line = null;
                 try {
                     client.close();
@@ -215,29 +213,29 @@ public class ServerWątki extends Thread {
 
 
     void botMove() {
-        List<String> movelist = parserOfCommand( serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).Turn());
-        System.out.println("server moves "+movelist);
+        List<String> movelist = parserOfCommand(server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).Turn());
+        System.out.println("server moves " + movelist);
         if (!movelist.get(1).equals("PASS"))
-            serverSide.boards.get(boardID).localboard.movePawnServer(serverSide.boards.get(boardID).localboard.findField(parseInt(movelist.get(1)), parseInt(movelist.get(2))), serverSide.boards.get(boardID).localboard.findField(parseInt(movelist.get(movelist.size() - 2)), parseInt(movelist.get(movelist.size() - 1))));
+            server.boards.get(boardID).localboard.movePawnServer(server.boards.get(boardID).localboard.findField(parseInt(movelist.get(1)), parseInt(movelist.get(2))), server.boards.get(boardID).localboard.findField(parseInt(movelist.get(movelist.size() - 2)), parseInt(movelist.get(movelist.size() - 1))));
 
-        if (serverSide.boards.get(boardID).currentPlayerTurn + 1 < serverSide.boards.get(boardID).numberOfPlayers)
-            serverSide.boards.get(boardID).currentPlayerTurn++;
+        if (server.boards.get(boardID).pbecnaTuraGracza + 1 < server.boards.get(boardID).numberOfPlayers)
+            server.boards.get(boardID).pbecnaTuraGracza++;
         else
-            serverSide.boards.get(boardID).currentPlayerTurn = 0;
+            server.boards.get(boardID).pbecnaTuraGracza = 0;
 
-        System.out.println("server current player ID " + serverSide.boards.get(boardID).currentPlayerTurn);
+        System.out.println("server current player ID " + server.boards.get(boardID).pbecnaTuraGracza);
 
-        serverSide.boards.get(boardID).localboard.setPlayerID(serverSide.boards.get(boardID).currentPlayerTurn);
+        server.boards.get(boardID).localboard.setPlayerID(server.boards.get(boardID).pbecnaTuraGracza);
 
-        for (ServerWątki t : serverSide.threadServer) {
+        for (ServerWątki t : server.threadServer) {
             if (t.boardID == boardID) {
                 if (movelist.get(1).equals("PASS"))
                     t.out.println("MOVEPASS");
                 else
                     t.out.println("MOVE " + movelist.get(1) + " " + movelist.get(2) + " " + movelist.get(movelist.size() - 2) + " " + movelist.get(movelist.size() - 1));
 
-                if (!serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).bot)
-                    if (t.clientID == serverSide.boards.get(boardID).players.get(serverSide.boards.get(boardID).currentPlayerTurn).clientID)
+                if (!server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).bot)
+                    if (t.clientID == server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID)
                         t.out.println("YOURTURN");
 
 
@@ -263,8 +261,8 @@ public class ServerWątki extends Thread {
 
 
     public int addNewBoard(int playerID, int numberOfHuans, int numberOfBots) {
-        int witch = serverSide.boards.size();
-        serverSide.boards.add(new StaraPlansza(witch, playerID, numberOfHuans, numberOfBots));
+        int witch = server.boards.size();
+        server.boards.add(new StaraPlansza(witch, playerID, numberOfHuans, numberOfBots));
         return witch;
     }
 
