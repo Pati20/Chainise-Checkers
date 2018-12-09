@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class ClientAppTest {
 
@@ -32,6 +32,7 @@ public class ClientAppTest {
         assertTrue(app.checkPlayersNumber(1, 3));
         assertTrue(app.checkPlayersNumber(1, 1));
         assertNotNull(app.checkPlayersNumber(3, 3));
+
     }
 
     @Test
@@ -47,6 +48,28 @@ public class ClientAppTest {
         assertEquals(false,cv.onExit());
 
         //clientCommunicator = new ClientViewer(this, 0, 0, false,addressField.getText());
+    }
+
+    @Test
+    public void joinTest() {
+        ClientApp app = createMockedClientApp();
+        app.joinGame();
+        verify(app,times(1)).joinGame();
+    }
+
+    @Test
+    public void winScreenTest() {
+        ClientApp app = createMockedClientApp();
+        app.winScreen();
+        verify(app,times(1)).winScreen();
+    }
+
+    @Test(expected = Exception.class)
+    public void givenIncorrectNumberOfPlayers() {
+        ClientApp app = mock(ClientApp.class);
+        doThrow().when(app).checkPlayersNumber(isA(Integer.class), isA(Integer.class));
+
+        app.checkPlayersNumber(5, 5);
     }
 
     protected ClientViewer createMockedClientViewer() {

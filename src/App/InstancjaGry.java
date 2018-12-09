@@ -30,7 +30,9 @@ public class InstancjaGry {
     public Plansza board;
     int playerID;
 
-    //declaration of GUI elements
+    /**
+     * Deklaracja Gui elementów
+     */
     GridPane gridpane;
     VBox vbox;
     ClientApp clientapp;
@@ -49,17 +51,14 @@ public class InstancjaGry {
         ruszonyPionek = null;
         clientapp.stopWaiting();
         if (checkWin()) lockGame();
-        //System.out.println("activity true " + aktywnyNaPlanszy);
     }
 
     public void lockGame() {
         aktywnyNaPlanszy = false;
         clientapp.startWaiting();
-        //System.out.println("activity false " + aktywnyNaPlanszy);
     }
 
     public Boolean getAktywnyNaPlanszy() {
-        //System.out.println("activity return " + aktywnyNaPlanszy);
         return aktywnyNaPlanszy;
     }
 
@@ -127,7 +126,7 @@ public class InstancjaGry {
         ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonHowToPlay, buttonAboutUs, new Separator(),colorLabel,circle);
 
 
-        //this.gameReady = true;
+        //this.gotowaGra = true;
         //create vbox with button bar and table (board)
         vbox = new VBox();
         vbox.getChildren().addAll(toolbar, gridpane);

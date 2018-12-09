@@ -16,10 +16,10 @@ public class Server {
     public List<Integer> ports = new ArrayList<>();
     List<StaraPlansza> boards = new ArrayList<StaraPlansza>();
     ServerSocket serverSocket;
-    Socket client;
-    BufferedReader in = null;
-    PrintWriter out = null;
-    String line = "";
+//    Socket client;
+//    BufferedReader in = null;
+//    PrintWriter out = null;
+//    String line = "";
     int clientCounter = 0;
     List<ServerWątki> threadServer = new ArrayList<>();
 
@@ -31,7 +31,7 @@ public class Server {
             serverSocket = new ServerSocket(ports.get(0));
             System.out.println("SERVER START");
         } catch (Exception e) {
-            System.out.println("Could not listen on port 9999");
+            System.out.println("Błąd nasłuchu na porcie 9999");
             e.printStackTrace();
         }
 

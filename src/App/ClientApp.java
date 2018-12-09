@@ -27,7 +27,12 @@ public class ClientApp extends Application {
     public ClientViewer clientCommunicator;
     TextField adres;
 
-
+    /**
+     * Metoda odpowiedzlna za sprawdzanie poprawnej liczby graczy
+     * @param numberOfHuman - liczba graczy
+     * @param numberOfBots - liczba botów
+     * @return true/false
+     */
     public boolean checkPlayersNumber(Integer numberOfHuman, Integer numberOfBots) {
         int sum = numberOfHuman + numberOfBots;
         if (sum == 2 || sum == 3 || sum == 4 || sum == 6) {
@@ -49,7 +54,7 @@ public class ClientApp extends Application {
      * @param number- liczba botów/liczba graczy
      * @param table - table odnosi sie do checkbox1 i checkbox1
      */
-    void setCheckBoxNotSelected(int number, int table) {
+    private void setCheckBoxNotSelected(int number, int table) {
         CheckBox temp[];
         if (table == 1) {
             temp = checkbox1;
@@ -57,13 +62,13 @@ public class ClientApp extends Application {
         } else {
             temp = checkbox2;
             setBoot(number);
+            number++;
         }
         for (int i = 0; i < 6; i++) {
             if (i == number - 1) continue;
             temp[i].setSelected(false);
 
         }
-        System.out.println(number);
     }
 
     public void setPlayers(int players) { this.players = players; }
@@ -173,10 +178,11 @@ public class ClientApp extends Application {
 
         for (int i = 0; i < 6; i++) {
             int j = i + 1;
+            int k = i;
             checkbox1[i] = new CheckBox("" + (i + 1));
             checkbox1[i].setOnMouseClicked(event -> setCheckBoxNotSelected(j, 1));
-            checkbox2[i] = new CheckBox("" + (i + 1));
-            checkbox2[i].setOnMouseClicked(event -> setCheckBoxNotSelected(j, 2));
+            checkbox2[i] = new CheckBox("" + (i));
+            checkbox2[i].setOnMouseClicked(event -> setCheckBoxNotSelected(k, 2));
         }
         HBox hboxOfPlayers = new HBox(8);
         hboxOfPlayers.getChildren().addAll(checkbox1);

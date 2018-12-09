@@ -44,10 +44,10 @@ public class ClientViewer extends Thread {
         numberOfBots = nnumberOfBots;
         numberOfHuman = nnubmerOfHuman;
         this.address = address;
-        System.out.println(nnubmerOfHuman + " " + nnumberOfBots);
+        System.out.println("Liczba graczy : botów "+nnubmerOfHuman + " " + nnumberOfBots);
         host = hhost;
         this.clientapp = clientapp;
-        System.out.println("Client start");
+        System.out.println("Kilent zaczął grę start");
         this.SocketListener();
 
     }
@@ -78,7 +78,7 @@ public class ClientViewer extends Thread {
         out.println("CONECT");
         System.out.println("klientID " + klientID + " conect ");
         try {
-            while (input.equals("")) {
+            while (input.equals("")) { //Dopóki input jest pusty pobierz z socketa Stream
                 input = in.readLine();
             }
             //CLIENTID
@@ -92,13 +92,8 @@ public class ClientViewer extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (host) {
-            begin();
-
-        } else {
-            getGames();
-
-        }
+        if (host) { begin(); }
+        else { getGames(); }
     }
 
 
@@ -168,6 +163,7 @@ public class ClientViewer extends Thread {
                         System.out.println("get games " + input);
                         conectBoardID = parseInt(comand.get(1));
                         cclientIDOnBoard = parseInt(comand.get(2)) + parseInt(comand.get(4));
+                        System.out.println("cclientIDOnBoard to "+ cclientIDOnBoard);
                         conectToGame(conectBoardID, cclientIDOnBoard);
                         break;
                     } else {
@@ -202,7 +198,7 @@ public class ClientViewer extends Thread {
     public void game() {
         JFrame dialog;
         out.println("GAMEREADY " + klientID);
-        System.out.println("client start game już w game");
+        System.out.println("Klient jest w grze ");
         try {
             input = "";
             while (input.equals("") && activityOfClient) {
@@ -261,16 +257,11 @@ public class ClientViewer extends Thread {
                         break;
 
                     case "MOVEDECLINED":
-                        //      dialog = new DialogWindow("INCORRECT MOVE");
                         break;
                     case "YOUWON":
-
-                        //    dialog = new DialogWindow("YOU WON /n GAME IS END");
-
                         break;
 
                     case "YOULOSE":
-                        //  dialog = new DialogWindow("YOU LOSE /n GAME IS END");
                         break;
                 }
 
@@ -284,7 +275,11 @@ public class ClientViewer extends Thread {
 
     }
 
-
+    /**
+     * Metoda króra wycina nam komendy i zwraca je jako Arraylist
+     * @param line
+     * @return
+     */
     public List parserOfCommand(String line) {
         List<String> list = new ArrayList<>();
         while (line != "") {
