@@ -1,7 +1,5 @@
-package Tests.Server.Gracze;
+package Server.Gracze;
 
-import Server.Gracze.Człowiek;
-import Server.Gracze.Gracz;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 

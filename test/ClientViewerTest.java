@@ -1,16 +1,11 @@
-package Tests;
+
 
 import App.ClientApp;
 import App.ClientViewer;
-import Server.Server;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 
 public class ClientViewerTest {
 

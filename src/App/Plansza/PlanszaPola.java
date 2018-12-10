@@ -40,7 +40,7 @@ public class PlanszaPola extends Circle {
 
         tempRef = this;
 
-        setFill(KoloryModeli.Kolor.KoloryModeli(pionek));
+        setFill(KoloryModeli.Kolor.Kolory(pionek));
         setStroke(Color.ALICEBLUE);
         setStrokeType(StrokeType.INSIDE);
         setStrokeWidth(2);

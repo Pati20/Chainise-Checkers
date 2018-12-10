@@ -9,7 +9,9 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
@@ -26,10 +28,10 @@ public class ClientApp extends Application {
     InstancjaGry instancjaGry;
     private Stage mainWindow;
     private Scene startScene, gameScene, waitScene, playersWaitScene, winScene;
-    private CheckBox checkbox1[] = new CheckBox[6];
-    private CheckBox checkbox2[] = new CheckBox[6];
+    private CheckBox[] checkbox1 = new CheckBox[6];
+    private CheckBox[] checkbox2 = new CheckBox[6];
     private int players, boot;
-    public ClientViewer clientCommunicator;
+    public ClientViewer clientViewer;
     TextField adres;
 
     /**
@@ -60,7 +62,7 @@ public class ClientApp extends Application {
      * @param table - table odnosi sie do checkbox1 i checkbox1
      */
     private void setCheckBoxNotSelected(int number, int table) {
-        CheckBox temp[];
+        CheckBox[] temp;
         if (table == 1) {
             temp = checkbox1;
             setPlayers(number);
@@ -92,30 +94,43 @@ public class ClientApp extends Application {
      */
     public void startGame(int numberOfHuman, int numberOfBots) {
         startPlayersWaiting();
-        clientCommunicator = new ClientViewer(this, numberOfHuman, numberOfBots, true, adres.getText());
+        clientViewer = new ClientViewer(this, numberOfHuman, numberOfBots, true, adres.getText());
     }
 
     /**
      * Metoda odpowiedzialna za dołącznie do istniejącej już gry
      */
     public void joinGame() {
-        clientCommunicator = new ClientViewer(this, 0, 0, false, adres.getText());
+        clientViewer = new ClientViewer(this, 0, 0, false, adres.getText());
     }
 
+    private BackgroundImage setImmage(String path){
+        BackgroundImage myBI = null;
+        try {
+            myBI = new BackgroundImage(new Image(new FileInputStream(path)),
+                    BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                    BackgroundSize.DEFAULT);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return myBI;
+    }
+    /**
+     * Motoda która uruchamia Instancję gry
+     * @param playerID
+     * @param numberOfPlayers
+     */
     void startLocalGame(int playerID, int numberOfPlayers) {
         instancjaGry = new InstancjaGry(this, playerID, numberOfPlayers);
         Platform.runLater(new Runnable() {
+            /**
+             * Wewnętrzna metoda odpowiedzialna za zmianę wyglądu okna podczas działania gry
+             */
             public void run() {
-                BackgroundImage myBI= null;
-                try {
-                    myBI = new BackgroundImage(new Image(new FileInputStream("Fotos/tlo.png")),
-                            BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                            BackgroundSize.DEFAULT);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                instancjaGry.vbox.setBackground(new Background(myBI));
-                gameScene = new Scene(instancjaGry.vbox, 500, 544);
+
+                BackgroundImage myBI= setImmage("Fotos/Game_background.png");
+                instancjaGry.getVbox().setBackground(new Background(myBI));
+                gameScene = new Scene(instancjaGry.getVbox(), 500, 544);
                 mainWindow.setScene(waitScene);
                 mainWindow.setMinHeight(634);
                 mainWindow.setMinWidth(600);
@@ -164,9 +179,9 @@ public class ClientApp extends Application {
 
     public boolean onExit() {
         try {
-            clientCommunicator.activityOfClient = false;
-            clientCommunicator.terminateServer();
-            clientCommunicator.interrupt();
+            clientViewer.activityOfClient = false;
+            clientViewer.terminateServer();
+            clientViewer.interrupt();
         } catch (Exception e) {
             System.out.println("Kliient nie połączył się z serwerem");
             return true;
@@ -189,14 +204,20 @@ public class ClientApp extends Application {
         vbox.setPadding(new Insets(30));
 
         Label label1 = new Label("Liczba graczy");
+        label1.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD,15));
+        label1.setTextFill(Color.web("FFFFFF"));
         Label label2 = new Label("Liczba botów");
+        label2.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD ,15));
+        label2.setTextFill(Color.web("FFFFFF"));
 
         for (int i = 0; i < 6; i++) {
             int j = i + 1;
             int k = i;
             checkbox1[i] = new CheckBox("" + (i + 1));
+            checkbox1[i].setTextFill(Color.web("FFFFFF"));
             checkbox1[i].setOnMouseClicked(event -> setCheckBoxNotSelected(j, 1));
             checkbox2[i] = new CheckBox("" + (i));
+            checkbox2[i].setTextFill(Color.web("FFFFFF"));
             checkbox2[i].setOnMouseClicked(event -> setCheckBoxNotSelected(k, 2));
         }
         HBox hboxOfPlayers = new HBox(8);
@@ -205,27 +226,31 @@ public class ClientApp extends Application {
         hboxOfBoot.getChildren().addAll(checkbox2);
 
         Button button1 = new Button("Nowa gra");
-        //button1.set
+        button1.setMinSize(100,25);
         button1.setOnMouseClicked(event -> checkPlayersNumber(getPlayers(), getBoot()));
 
         Label label3 = new Label("Adres serwera");
+        label3.setFont(new Font("Arial",20));
+        label3.setTextFill(Color.web("FFFFFF"));
         adres = new TextField();
         adres.setText("localhost");
+
 
         Button button2 = new Button("Dołącz do gry");
         button2.setOnMouseClicked(event -> joinGame());
 
         HBox hBox3 = new HBox(10);
         hBox3.getChildren().addAll(button1,button2);
+        hBox3.setAlignment(CENTER);
 
         vbox.getChildren().addAll(label3, adres, new Separator(), label1, hboxOfPlayers, label2, hboxOfBoot, new Separator(),hBox3);
 
-        Image image = new Image(new FileInputStream("Fotos/Doloczanie graczy.png"));
+        Image image = new Image(new FileInputStream("Fotos/Connection_of_players.png"));
         ImageView imageView = new ImageView(image);
         Group root = new Group(imageView);
         playersWaitScene = new Scene(root, 400, 450);
 
-        Image image2 = new Image(new FileInputStream("Fotos/Oczekiwanie_na_graczy.png"));
+        Image image2 = new Image(new FileInputStream("Fotos/Waitinf_for_players.png"));
         ImageView imageView2 = new ImageView(image2);
         Group root2 = new Group(imageView2);
         waitScene = new Scene(root2, 500, 544);
@@ -236,6 +261,8 @@ public class ClientApp extends Application {
         winLabel.setAlignment(CENTER);
         winScene = new Scene(winLabel, 500, 544);
 
+        BackgroundImage myBI= setImmage("Fotos/first_background.png");
+        vbox.setBackground(new Background(myBI));
 
         startScene = new Scene(vbox, 400, 400);
         mainWindow.setScene(startScene);

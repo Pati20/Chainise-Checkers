@@ -1,4 +1,4 @@
-package Tests.Server;
+package Server;
 
 public class StaraPlanszaTest {
 }

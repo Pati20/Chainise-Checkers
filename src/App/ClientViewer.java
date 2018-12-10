@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -16,22 +17,22 @@ import static java.lang.Integer.parseInt;
 public class ClientViewer extends Thread {
 
     // Zmienne odpowiedzialne za komunikację z serwerem
-    Socket socket = null;
-    PrintWriter out = null;
-    BufferedReader in = null;
-    String input = "";
-    List<String> comand = new ArrayList<>();
+    private Socket socket = null;
+    private PrintWriter out = null;
+    private BufferedReader in = null;
+    private String input = "";
+    private List<String> comand = new ArrayList<>();
 
     //Zmienne odpowiedzialne za przebieg gry
-    int klientID = 0;
-    int graczID = 0;
-    int numberOfHuman;
-    int numberOfBots;
-    int currentPlayerTurn;
-    int numberOfPlayers;
-    int witchBoardOnServer;
-    boolean host;
-    String address = new String();
+    private int klientID = 0;
+    private int graczID = 0;
+    private int numberOfHuman;
+    private int numberOfBots;
+    private int currentPlayerTurn;
+    private int numberOfPlayers;
+    private  int witchBoardOnServer;
+    private boolean host;
+    private String address;
     public Boolean activityOfClient = true;
 
     //reference to client
@@ -56,6 +57,8 @@ public class ClientViewer extends Thread {
         activityOfClient = false;
     }
 
+    public  void log(String message){ System.out.println(message); }
+
     /**
      * Metoda odopwiedzialna za łączenie się z serwerem
      */
@@ -66,17 +69,17 @@ public class ClientViewer extends Thread {
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
-            System.out.println("UnknownHost Exception: localhost");
+            log("UnknownHost Exception: localhost");
         } catch (IOException e) {
             System.out.println("Socket Exception: Brak Input/Output");
         }
-        System.out.println("Client socket " + socket.getLocalPort());
+        log("Client socket " + socket.getLocalPort());
         conect();
     }
 
     public void conect() {
         out.println("CONECT");
-        System.out.println("klientID " + klientID + " conect ");
+        log("klientID " + klientID + " conect ");
         try {
             while (input.equals("")) { //Dopóki input jest pusty pobierz z socketa Stream
                 input = in.readLine();
@@ -85,9 +88,9 @@ public class ClientViewer extends Thread {
             comand = parserOfCommand(input);
             if (klientID == 0) {
                 klientID = parseInt(comand.get(0));
-                System.out.println("client klientID " + klientID);
+                log("client klientID " + klientID);
                 socket = new Socket(address, parseInt(comand.get(1)));
-                System.out.println("Client client id " + comand.get(0) + "  port  " + parseInt(comand.get(1)) + " ustawiono " + socket.getLocalPort());
+                log("Client client id " + comand.get(0) + "  port  " + parseInt(comand.get(1)) + " ustawiono " + socket.getLocalPort());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,7 +101,7 @@ public class ClientViewer extends Thread {
 
 
     public void begin() {
-        System.out.println("BEGIN CLIENT");
+        log("BEGIN CLIENT");
         out.println("BEGIN" + " " + klientID + " " + numberOfHuman + " " + numberOfBots);
         try {
             input = "";
@@ -119,17 +122,17 @@ public class ClientViewer extends Thread {
 
 
     public void run() {
-        System.out.println("WAITNING ON START");
+        log("WAITNING ON START");
         try {
             input = "";
             while (input.equals("") && activityOfClient) {
                 input = "";
                 input = in.readLine();
-                System.out.println(input);
+                log(input);
                 comand = parserOfCommand(input);
                 System.out.println(comand);
                 if ((comand.get(0).equals("START"))) {
-                    System.out.println("CLIENT START " + klientID + " : " + input);
+                    log("CLIENT START " + klientID + " : " + input);
                     numberOfHuman = parseInt(comand.get(1));
                     numberOfBots = parseInt(comand.get(2));
                     clientapp.startLocalGame(graczID, numberOfHuman + numberOfBots);
@@ -160,10 +163,10 @@ public class ClientViewer extends Thread {
                     if ((comand.get(0).equals("BOARDS"))) {
                         /*
                          */
-                        System.out.println("get games " + input);
+                        log("get games " + input);
                         conectBoardID = parseInt(comand.get(1));
                         cclientIDOnBoard = parseInt(comand.get(2)) + parseInt(comand.get(4));
-                        System.out.println("cclientIDOnBoard to "+ cclientIDOnBoard);
+                        log("cclientIDOnBoard to "+ cclientIDOnBoard);
                         conectToGame(conectBoardID, cclientIDOnBoard);
                         break;
                     } else {
@@ -183,7 +186,7 @@ public class ClientViewer extends Thread {
     public void conectToGame(int conectBoardID, int cclientIDOnBoard) {
         this.graczID = cclientIDOnBoard;
         this.witchBoardOnServer = conectBoardID;
-        System.out.println("conect to " + witchBoardOnServer + " " + graczID);
+        log("conect to " + witchBoardOnServer + " " + graczID);
         out.println("CONECTTOGAME " + klientID + " " + conectBoardID);
 
         this.start();
@@ -198,38 +201,37 @@ public class ClientViewer extends Thread {
     public void game() {
         JFrame dialog;
         out.println("GAMEREADY " + klientID);
-        System.out.println("Klient jest w grze ");
+      log("Klient jest w grze ");
         try {
             input = "";
             while (input.equals("") && activityOfClient) {
                 input = in.readLine();
-                System.out.println("client in " + input);
+                log("client in " + input);
                 comand = parserOfCommand(input);
                 switch (comand.get(0)) {
                     case "YOURTURN":
-                        System.out.println("client YOURTURN");
+                        log("client YOURTURN");
                         clientapp.instancjaGry.unlockGame();
-                        System.out.println("client AFTER UNLOCK");
+                        log("client AFTER UNLOCK");
                         while (clientapp.instancjaGry.getAktywnyNaPlanszy() && activityOfClient) {
                             try {
                                 Thread.sleep(250);
-                                //System.out.println("oczekiwanie ");
                             } catch (InterruptedException e) {
                                 System.out.println("vuhguhgu");
                             }
                         }
-                        System.out.println("waiting client ");
-                        String moves = "";
-                        System.out.println("clietn waiting fo move ");
+                        log("waiting client ");
+                        StringBuilder moves = new StringBuilder();
+                        log("clietn waiting fo move ");
                         if (clientapp.instancjaGry.moveRegister.size() != 0) {
                             List<String> moveList = new ArrayList<>();
                             moveList.clear();
                             moveList = clientapp.instancjaGry.moveRegister;
                             for (String s : moveList) {
-                                moves = moves + " " + s;
-                                System.out.println("moves clietn " + s);
+                                moves.append(" ").append(s);
+                                log("moves clietn " + s);
                             }
-                        } else moves = " PASS";
+                        } else moves = new StringBuilder(" PASS");
                         clientapp.instancjaGry.lockGame();
                         out.println("ENDTURN" + moves);
 
@@ -282,8 +284,8 @@ public class ClientViewer extends Thread {
      */
     public List parserOfCommand(String line) {
         List<String> list = new ArrayList<>();
-        while (line != "") {
-            if (line.indexOf(" ") != -1) {
+        while (!Objects.equals(line, "")) {
+            if (line.contains(" ")) {
                 list.add(line.substring(0, line.indexOf(" ")));
                 line = line.substring(line.indexOf(" ") + 1);
             } else {
@@ -294,21 +296,5 @@ public class ClientViewer extends Thread {
         return list;
     }
 
-<<<<<<< HEAD
-//    public static void main(String args[]){
-//        // public ClientViewer(ClientApp clientapp, int nnubmerOfHuman, int nnumberOfBots, boolean hhost, String address)
-//        ClientViewer cw = new ClientViewer(new ClientApp(), 2,3,true,"localhost");
-//
-//        String command = "CLIENT_START IN_GAME CONNECT    ";
-//        List<String> testArray = new ArrayList<>();
-//
-//        testArray = cw.parserOfCommand(command);
-//        for (int i =0; i < testArray.size() -1; i++) {
-//            System.out.println("ELEMENT "+i +" to "+  "\""+ testArray.get(i) + "\"");
-//        }
-//    }
 
 }
-=======
-}
->>>>>>> c189367d59dd0796297e3e617178c2298f5e1114

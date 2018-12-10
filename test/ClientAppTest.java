@@ -1,4 +1,4 @@
-package Tests;
+
 
 import App.ClientApp;
 
@@ -47,7 +47,7 @@ public class ClientAppTest {
         ClientApp cv = createMockedClientApp();
         assertEquals(false,cv.onExit());
 
-        //clientCommunicator = new ClientViewer(this, 0, 0, false,addressField.getText());
+        //clientViewer = new ClientViewer(this, 0, 0, false,addressField.getText());
     }
 
     @Test

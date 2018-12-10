@@ -1,6 +1,5 @@
-package Tests.Server.Gracze;
+package Server.Gracze;
 
-import Server.Gracze.Gracz;
 import Server.StaraPlansza;
 import javafx.scene.paint.Color;
 import org.junit.Assert;
@@ -21,7 +20,7 @@ public class GraczTest {
     }
 
     @Test
-    public void testGameStart() throws Exception {
+    public void testGameStart() {
         gracz.moves = "MoveToDiffrentField";
         String expected = gracz.moves;
         Assert.assertEquals(expected,gracz.Turn());

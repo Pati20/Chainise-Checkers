@@ -1,7 +1,5 @@
 package App;
 
-import App.Plansza.KoloryModeli;
-import App.Plansza.PlanszaFabryka;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -12,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import static java.lang.Math.abs;
 
-
+import App.Plansza.KoloryModeli;
+import App.Plansza.PlanszaFabryka;
 import App.Plansza.Plansza;
 import App.Plansza.PlanszaPola;
 import static javafx.geometry.Pos.CENTER;
@@ -29,13 +28,12 @@ public class InstancjaGry {
     public List<String> moveRegister = new ArrayList<>();
     public Plansza board;
     int playerID;
-
     /**
      * Deklaracja Gui elementów
      */
-    GridPane gridpane;
-    VBox vbox;
-    ClientApp clientapp;
+    private GridPane gridpane;
+    private VBox vbox;
+    private ClientApp clientapp;
 
     public InstancjaGry(ClientApp clientapp, int playerID, int numberOfPlayers) {
         this.clientapp = clientapp;
@@ -43,7 +41,9 @@ public class InstancjaGry {
         polaPlanszy = PlanszaFabryka.stworzLokalnaPlansze(61).stworzPlansze(this, numberOfPlayers);
         generateGUI();
     }
-
+    public VBox getVbox(){
+        return this.vbox;
+    }
     //create fields of board on ArrayList
     public void unlockGame() {
         aktywnyNaPlanszy = true;
@@ -115,19 +115,17 @@ public class InstancjaGry {
         Button buttonHowToPlay = new Button("Jak grać?");
         buttonHowToPlay.setOnMouseClicked(event -> showHowToPlay());
         Button buttonAboutUs = new Button("O programie");
-        buttonAboutUs.setOnMouseClicked(event -> showAboutUs());
+        buttonAboutUs.setOnMouseClicked(event -> showAutors());
         Label colorLabel = new Label("Twój kolor: ");
         Circle circle = new Circle();
         circle.setRadius(10);
-        circle.setFill(KoloryModeli.Kolor.KoloryModeli(playerID));
+        circle.setFill(KoloryModeli.Kolor.Kolory(playerID));
         circle.setStroke(Color.GRAY);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setStrokeWidth(2);
         ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonHowToPlay, buttonAboutUs, new Separator(),colorLabel,circle);
 
 
-        //this.gotowaGra = true;
-        //create vbox with button bar and table (board)
         vbox = new VBox();
         vbox.getChildren().addAll(toolbar, gridpane);
         vbox.setVgrow(gridpane, Priority.ALWAYS);
@@ -135,7 +133,7 @@ public class InstancjaGry {
     }
 
     //show information about authors
-    void showAboutUs() {
+    void showAutors() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Autorzy programu");
@@ -174,8 +172,8 @@ public class InstancjaGry {
         if (testMove(oldPos, newPos)) {
             newPos.pionek = oldPos.pionek;
             oldPos.pionek = 0;
-            newPos.setFill(KoloryModeli.Kolor.KoloryModeli(newPos.pionek));
-            oldPos.setFill(KoloryModeli.Kolor.KoloryModeli(oldPos.pionek));
+            newPos.setFill(KoloryModeli.Kolor.Kolory(newPos.pionek));
+            oldPos.setFill(KoloryModeli.Kolor.Kolory(oldPos.pionek));
             ruszonyPionek = newPos;
             return true;
         }
@@ -186,8 +184,8 @@ public class InstancjaGry {
     public void movePawnServer(PlanszaPola oldPos, PlanszaPola newPos) {
         newPos.pionek = oldPos.pionek;
         oldPos.pionek = 0;
-        newPos.setFill(KoloryModeli.Kolor.KoloryModeli(newPos.pionek));
-        oldPos.setFill(KoloryModeli.Kolor.KoloryModeli(oldPos.pionek));
+        newPos.setFill(KoloryModeli.Kolor.Kolory(newPos.pionek));
+        oldPos.setFill(KoloryModeli.Kolor.Kolory(oldPos.pionek));
     }
 
     //move pawn from oldPos to newPos
@@ -261,9 +259,7 @@ public class InstancjaGry {
                     }
                     //left down
                     if (newPos.kolumna == oldPos.kolumna - 2) {
-                        if (findField(oldPos.kolumna - 1, oldPos.wiersz - 1).pionek > 0) {
-                            return true;
-                        }
+                        return findField(oldPos.kolumna - 1, oldPos.wiersz - 1).pionek > 0;
                     }
                 }
             }

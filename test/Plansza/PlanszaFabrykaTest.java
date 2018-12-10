@@ -1,4 +1,4 @@
-package Tests.Plansza;
+package Plansza;
 
 import App.Plansza.PlanszaTyp1;
 import App.Plansza.PlanszaFabryka;

@@ -16,16 +16,13 @@ public class Server {
     public List<Integer> ports = new ArrayList<>();
     List<StaraPlansza> boards = new ArrayList<StaraPlansza>();
     ServerSocket serverSocket;
-//    Socket client;
-//    BufferedReader in = null;
-//    PrintWriter out = null;
-//    String line = "";
+
     int clientCounter = 0;
     List<ServerWątki> threadServer = new ArrayList<>();
 
     public Server() {
 
-        ports.add(new Integer(9999));
+        ports.add((9999));
         System.out.println(ports.get(0));
         try {
             serverSocket = new ServerSocket(ports.get(0));

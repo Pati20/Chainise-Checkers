@@ -11,6 +11,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -60,14 +61,14 @@ public class ServerWątki extends Thread {
     }
 
     private String DoSomething(String line) {
-        String response = "";
+        StringBuilder response = new StringBuilder();
         List<String> comand = parserOfCommand(line);
         int witch;
         int work;
         System.out.println("comand " + comand.get(0));
         switch (comand.get(0)) {
             case "CONECT":
-                response = clientID + " " + port;
+                response = new StringBuilder(clientID + " " + port);
                 System.out.println("SERVER CONECTED PORT " + port + "   " + clientID);
 
                 break;
@@ -76,16 +77,16 @@ public class ServerWątki extends Thread {
                 witch = addNewBoard(parseInt(comand.get(1)), parseInt(comand.get(2)), parseInt(comand.get(3)));
                 boardID = witch;
                 System.out.println("server human cclietnID " + server.boards.get(boardID).players.get(0).clientID + " : " + server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID);
-                response = comand.get(1) + " " + boardID + " " + 0;
+                response = new StringBuilder(comand.get(1) + " " + boardID + " " + 0);
                 break;
 
             case "GETGAMES"://GETGAMES + CLIENT_ID + BOARD_ID
                 for (StaraPlansza b : server.boards) {
                     if (b.numberOfHumans != b.licznikLudzi)
-                        if (response.equals(""))
-                            response = "BOARDS " + b.planszaID + " " + b.licznikLudzi + " " + b.numberOfHumans + " " + b.numberOfBost;
+                        if (response.toString().equals(""))
+                            response = new StringBuilder("BOARDS " + b.planszaID + " " + b.licznikLudzi + " " + b.numberOfHumans + " " + b.numberOfBost);
                         else
-                            response = response + " " + b.planszaID + " " + b.licznikLudzi + " " + b.numberOfHumans + " " + b.numberOfBost;
+                            response.append(" ").append(b.planszaID).append(" ").append(b.licznikLudzi).append(" ").append(b.numberOfHumans).append(" ").append(b.numberOfBost);
                 }
 
                 break;
@@ -93,9 +94,9 @@ public class ServerWątki extends Thread {
             case "START": //START + CLIENT_ID + BOARD_ID
                 if (server.boards.get(boardID).numberOfHumans == server.boards.get(boardID).licznikLudzi) {
                     server.boards.get(boardID).boardGenerateServer();
-                    response = "START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost;
+                    response = new StringBuilder("START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost);
                 } else {
-                    response = "STOP" + " " + comand.get(1);
+                    response = new StringBuilder("STOP" + " " + comand.get(1));
                 }
 
                 break;
@@ -103,7 +104,7 @@ public class ServerWątki extends Thread {
             case "GAMEREADY":
                 System.out.println("server gamerdy " + clientID + "    " + server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID);
                 if (clientID == server.boards.get(boardID).players.get(server.boards.get(boardID).pbecnaTuraGracza).clientID) {
-                    response = "YOURTURN " + clientID;
+                    response = new StringBuilder("YOURTURN " + clientID);
                     System.out.println("server yourturn " + clientID);
                 }
 
@@ -118,7 +119,7 @@ public class ServerWątki extends Thread {
                     for (ServerWątki t : server.threadServer) {
                         if (t.boardID == boardID) {
                             if (t.clientID == clientID)
-                                response = "START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost;
+                                response = new StringBuilder("START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost);
                             else {
                                 t.out.println("START " + server.boards.get(boardID).numberOfHumans + " " + server.boards.get(boardID).numberOfBost);
                             }
@@ -180,7 +181,7 @@ public class ServerWątki extends Thread {
 
                     System.out.println("server moves itp " + comand);
 
-                } else response = "MOVEDECLINED";
+                } else response = new StringBuilder("MOVEDECLINED");
 
                 break;
 
@@ -208,7 +209,7 @@ public class ServerWątki extends Thread {
 
         System.out.println("server out " + response);
         comand.clear();
-        return response;
+        return response.toString();
     }
 
 
@@ -247,7 +248,7 @@ public class ServerWątki extends Thread {
 
     private List parserOfCommand(String line) {
         List<String> list = new ArrayList<>();
-        while (line != "") {
+        while (!Objects.equals(line, "")) {
             if (line.indexOf(" ") != -1) {
                 list.add(line.substring(0, line.indexOf(" ")));
                 line = line.substring(line.indexOf(" ") + 1);

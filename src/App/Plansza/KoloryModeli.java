@@ -9,7 +9,7 @@ public enum KoloryModeli {
 
     Kolor;
 
-    public Color KoloryModeli(int i) {
+    public Color Kolory(int i) {
         switch (i) {
             case 0:
                 return Color.LIGHTGRAY;

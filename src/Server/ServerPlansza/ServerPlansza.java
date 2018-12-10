@@ -63,56 +63,50 @@ public abstract class ServerPlansza {
      */
     public boolean testMove(ServerPlanszaPola oldPos, ServerPlanszaPola newPos) {
         if (newPos.pionek == 0) {
-            if (true) {
-                if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
-                    //aktywnyNaPlanszy=false;
-                    return true;
+            if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.row - newPos.row) <= 1)) {
+                //aktywnyNaPlanszy=false;
+                return true;
+            }
+            if (oldPos.row == newPos.row) {
+                //right
+                if (newPos.kolumna == oldPos.kolumna + 4) {
+                    if (findField(oldPos.kolumna + 2, oldPos.row).pionek > 0) {
+                        return true;
+                    }
+                }
+                //left
+                if (newPos.kolumna == oldPos.kolumna - 4) {
+                    if (findField(oldPos.kolumna - 2, oldPos.row).pionek > 0) {
+                        return true;
+                    }
                 }
             }
-            if (true) {
-                if (oldPos.row == newPos.row) {
-                    //right
-                    if (newPos.kolumna == oldPos.kolumna + 4) {
-                        if (findField(oldPos.kolumna + 2, oldPos.row).pionek > 0) {
-                            return true;
-                        }
-                    }
-                    //left
-                    if (newPos.kolumna == oldPos.kolumna - 4) {
-                        if (findField(oldPos.kolumna - 2, oldPos.row).pionek > 0) {
-                            return true;
-                        }
+
+            if (newPos.row == oldPos.row + 2) {
+                //right up
+                if (newPos.kolumna == oldPos.kolumna + 2) {
+                    if (findField(oldPos.kolumna + 1, oldPos.row + 1).pionek > 0) {
+                        return true;
                     }
                 }
-
-                if (newPos.row == oldPos.row + 2) {
-                    //right up
-                    if (newPos.kolumna == oldPos.kolumna + 2) {
-                        if (findField(oldPos.kolumna + 1, oldPos.row + 1).pionek > 0) {
-                            return true;
-                        }
-                    }
-                    //left up
-                    if (newPos.kolumna == oldPos.kolumna - 2) {
-                        if (findField(oldPos.kolumna - 1, oldPos.row + 1).pionek > 0) {
-                            return true;
-                        }
+                //left up
+                if (newPos.kolumna == oldPos.kolumna - 2) {
+                    if (findField(oldPos.kolumna - 1, oldPos.row + 1).pionek > 0) {
+                        return true;
                     }
                 }
+            }
 
-                if (newPos.row == oldPos.row - 2) {
-                    //right down
-                    if (newPos.kolumna == oldPos.kolumna + 2) {
-                        if (findField(oldPos.kolumna + 1, oldPos.row - 1).pionek > 0) {
-                            return true;
-                        }
+            if (newPos.row == oldPos.row - 2) {
+                //right down
+                if (newPos.kolumna == oldPos.kolumna + 2) {
+                    if (findField(oldPos.kolumna + 1, oldPos.row - 1).pionek > 0) {
+                        return true;
                     }
-                    //left down
-                    if (newPos.kolumna == oldPos.kolumna - 2) {
-                        if (findField(oldPos.kolumna - 1, oldPos.row - 1).pionek > 0) {
-                            return true;
-                        }
-                    }
+                }
+                //left down
+                if (newPos.kolumna == oldPos.kolumna - 2) {
+                    return findField(oldPos.kolumna - 1, oldPos.row - 1).pionek > 0;
                 }
             }
         }

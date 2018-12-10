@@ -34,7 +34,7 @@ public class StaraPlansza {
         this.numberOfHumans = nnumberOfHuans;
         this.numberOfBost = nnumberOfBots;
         this.numberOfPlayers = numberOfHumans+numberOfBost;
-        players.add(new Człowiek(pplayerID,players.size(), KoloryModeli.Kolor.KoloryModeli(licznikLudzi -1)));
+        players.add(new Człowiek(pplayerID,players.size(), KoloryModeli.Kolor.Kolory(licznikLudzi -1)));
         for(int i=1;i <= numberOfBost;i++){
             players.add(new BotGame(i,numberOfPlayers,this));        }
     }
@@ -50,6 +50,6 @@ public class StaraPlansza {
 
     public void newPlayerConected(int pplayerID) {
         licznikLudzi++;
-        players.add(new Człowiek(pplayerID, players.size(), KoloryModeli.Kolor.KoloryModeli(players.size())));
+        players.add(new Człowiek(pplayerID, players.size(), KoloryModeli.Kolor.Kolory(players.size())));
     }
 }

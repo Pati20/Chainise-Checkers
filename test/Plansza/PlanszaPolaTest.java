@@ -1,4 +1,4 @@
-package Tests.Plansza;
+package Plansza;
 
 import App.Plansza.PlanszaPola;
 import org.junit.Assert;

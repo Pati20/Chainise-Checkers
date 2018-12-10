@@ -1,4 +1,4 @@
-package Tests.Server.Gracze.Bot;
+package Server.Gracze.Bot;
 
 public class BotTest {
 }
