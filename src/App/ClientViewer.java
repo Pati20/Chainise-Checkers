@@ -294,6 +294,7 @@ public class ClientViewer extends Thread {
         return list;
     }
 
+<<<<<<< HEAD
 //    public static void main(String args[]){
 //        // public ClientViewer(ClientApp clientapp, int nnubmerOfHuman, int nnumberOfBots, boolean hhost, String address)
 //        ClientViewer cw = new ClientViewer(new ClientApp(), 2,3,true,"localhost");
@@ -308,3 +309,6 @@ public class ClientViewer extends Thread {
 //    }
 
 }
+=======
+}
+>>>>>>> c189367d59dd0796297e3e617178c2298f5e1114
