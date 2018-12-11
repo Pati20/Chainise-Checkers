@@ -17,11 +17,10 @@ public class PlanszaPola extends Circle {
     public int winID;
     InstancjaGry instancjaGry;
     private PlanszaPola tempRef;
-    private int buffer;
 
     public PlanszaPola(int id, int winID, int kolumna, int wiersz) {
-        pionek = id;
 
+        this.pionek = id;
         this.instancjaGry = instancjaGry;
         this.kolumna = kolumna;
         this.wiersz = wiersz;
@@ -30,9 +29,17 @@ public class PlanszaPola extends Circle {
         tempRef = this;
     }
 
+    /**
+     * Konstruktor odpowiedzialny za przechowywanie informacji na temat aktualnego piona, w konkretnej grze
+     * @param instancjaGry - aktualna gra
+     * @param id - nasz obecny narożnik, nasze położenie
+     * @param winID - narożnik do którego zdążamy
+     * @param kolumna - kolumna w której znajduje sie pion
+     * @param wiersz - wiersz w której znajduje sie pion
+     */
     public PlanszaPola(InstancjaGry instancjaGry, int id, int winID, int kolumna, int wiersz) {
-        pionek = id;
 
+        this.pionek = id;
         this.instancjaGry = instancjaGry;
         this.kolumna = kolumna;
         this.wiersz = wiersz;

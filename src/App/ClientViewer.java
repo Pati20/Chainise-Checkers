@@ -38,7 +38,6 @@ public class ClientViewer extends Thread {
     private boolean host;
     private String address;
     public Boolean activityOfClient = true;
-    private MessageDecorator m = new ClientMessageDecorator();
 
     //reference to client
     ClientApp clientapp;
@@ -50,17 +49,24 @@ public class ClientViewer extends Thread {
         numberOfBots = nnumberOfBots;
         numberOfHuman = nnubmerOfHuman;
         this.address = address;
-        System.out.println("Liczba graczy : botów "+nnubmerOfHuman + " " + nnumberOfBots);
+        log("Liczba graczy "+nnubmerOfHuman + " : botów " + nnumberOfBots);
         host = hhost;
         this.clientapp = clientapp;
-        System.out.println("Kilent zaczął grę start");
+        log("Zaczął grę start");
         this.SocketListener();
 
     }
 
     //public void threadEnd() { activityOfClient = false; }
 
-    public  void log(String message){ System.out.println(m.log(message)); }
+    /**
+     * Metoda która wypisuje nam informacje o aktualnym przebiegu rozgrywki ze strony Clienta
+     * Specjalnie nadpisujemy obiekt App.Decorator, by za każdym razem otrzymywać aktualną datę
+     * @param message
+     */
+    public  void log(String message){
+        MessageDecorator m = new ClientMessageDecorator();
+        System.out.println(m.log(message)); }
 
     /**
      * Metoda odopwiedzialna za łączenie się z serwerem
@@ -203,7 +209,7 @@ public class ClientViewer extends Thread {
 
     public void game() {
         out.println("GAMEREADY " + klientID);
-      log(" Jest w grze ");
+      log("Jest w grze ");
         try {
             input = "";
             while (input.equals("") && activityOfClient) {
@@ -212,9 +218,9 @@ public class ClientViewer extends Thread {
                 comand = parserOfCommand(input);
                 switch (comand.get(0)) {
                     case "YOURTURN":
-                        log(" YOURTURN");
+                        log("YOURTURN");
                         clientapp.instancjaGry.unlockGame();
-                        log(" AFTER UNLOCK");
+                        log("AFTER UNLOCK");
                         while (clientapp.instancjaGry.getAktywnyNaPlanszy() && activityOfClient) {
                             try {
                                 Thread.sleep(250);

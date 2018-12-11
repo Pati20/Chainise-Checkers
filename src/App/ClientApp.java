@@ -1,5 +1,7 @@
 package App;
 
+import App.Decorators.ClientMessageDecorator;
+import App.Decorators.MessageDecorator;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -78,6 +80,10 @@ public class ClientApp extends Application {
         }
     }
 
+    public  void log(String message){
+        MessageDecorator m = new ClientMessageDecorator();
+        System.out.println(m.log(message)); }
+
     public void setPlayers(int players) { this.players = players; }
 
     public void setBoot(int boot) { this.boot = boot; }
@@ -137,7 +143,7 @@ public class ClientApp extends Application {
                 mainWindow.setMaxHeight(834);
                 mainWindow.setMaxWidth(800);
                 mainWindow.setResizable(false);
-                System.out.println("Rozpoczęto lokalną grę.");
+                log("Rozpoczęto lokalną grę.");
             }
         });
     }
@@ -183,7 +189,7 @@ public class ClientApp extends Application {
             clientViewer.terminateServer();
             clientViewer.interrupt();
         } catch (Exception e) {
-            System.out.println("Kliient nie połączył się z serwerem");
+            log("Klijent nie połączył się z serwerem");
             return true;
         }
         Platform.exit();

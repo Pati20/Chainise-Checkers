@@ -4,13 +4,19 @@ import java.util.ArrayList;
 import App.InstancjaGry;
 
 /**
- * Klasa odpowiedzialna za stworzenie planszy o 61 polach
+ * Klasa odpowiedzialna za stworzenie planszy o 61 polach do gry (121 łącznie)
  */
 
 public class PlanszaTyp1 extends Plansza {
 
     private ArrayList<PlanszaPola> planszaPola = new ArrayList<>();
 
+    /**
+     * W zależnośći od ilości graczy tworzymy plansze, ustawiajac zawodników w odpowiednich rogach
+     * @param instancjaGry
+     * @param numberOfPlayers
+     * @return planszaPola - wypełniona pionami plansza
+     */
     public ArrayList<PlanszaPola> stworzPlansze(InstancjaGry instancjaGry, int numberOfPlayers) {
         switch (numberOfPlayers) {
             case 2:
@@ -37,7 +43,7 @@ public class PlanszaTyp1 extends Plansza {
     void ustawPionek(InstancjaGry instancjaGry , int corn1, int corn2, int corn3, int corn4, int corn5, int corn6) {
         for (int i = 0; i < 4; i++)
             for (int j = 0; j <= i; j++) {
-                planszaPola.add(new PlanszaPola(instancjaGry, corn1, corn4, (12 + 2 * j - i), i));
+                planszaPola.add(new PlanszaPola(instancjaGry, corn1, corn4, (12 + 2 * j - i), i));//kol-wiersz
             }
 
         for (int i = 0; i < 5; i++) {
