@@ -26,7 +26,6 @@ public class PlanszaTyp1 extends Plansza {
                 ustawPionek(instancjaGry, 1, 2, 3, 4, 5, 6);
                 break;
             default:
-                //System.out.println("błąd!");
                 break;
         }
         return planszaPola;

@@ -1,8 +1,7 @@
 package Server.Gracze;
 
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Color;
 import Server.StaraPlansza;
+import javafx.scene.paint.Color;
 
 public class Gracz {
 

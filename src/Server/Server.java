@@ -1,34 +1,36 @@
 package Server;
 
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
+import App.Decorators.MessageDecorator;
+import App.Decorators.ServerMessageDecorator;
+
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * Klasa odpowiedzialna za łączenie się  z klientem.
+ */
 public class Server {
 
-    static Server server;
-    public List<Integer> ports = new ArrayList<>();
-    List<StaraPlansza> boards = new ArrayList<StaraPlansza>();
-    ServerSocket serverSocket;
-
-    int clientCounter = 0;
-    List<ServerWątki> threadServer = new ArrayList<>();
+    static private Server server;
+    private List<Integer> ports = new ArrayList<>();
+    List<StaraPlansza> staraPlanszas = new ArrayList<StaraPlansza>();
+    private ServerSocket serverSocket;
+    List<ServerWatki> serverWatkis = new ArrayList<>();
+    private int clientCounter = 0;
+    MessageDecorator m = new ServerMessageDecorator();
 
     public Server() {
 
         ports.add((9999));
-        System.out.println(ports.get(0));
+       log("Port "+ports.get(0));
         try {
             serverSocket = new ServerSocket(ports.get(0));
-            System.out.println("SERVER START");
+            log("START");
         } catch (Exception e) {
-            System.out.println("Błąd nasłuchu na porcie 9999");
+            log("Błąd nasłuchu na porcie 9999");
             e.printStackTrace();
         }
 
@@ -43,13 +45,14 @@ public class Server {
 
     private void listenSocket() {
         while (true) {
-            System.out.println("SOCKET START " + clientCounter);
-            ServerWątki newthread = new ServerWątki(chosingPort(), ++clientCounter, this, serverSocket);
-            threadServer.add(newthread);
-            newthread.start();
+            log("SOCKET START " + clientCounter);
+            ServerWatki serverWatki = new ServerWatki(chosingPort(), ++clientCounter, this, serverSocket);
+            serverWatkis.add(serverWatki);
+            serverWatki.start();
 
         }
     }
+    public  void log(String message){ System.out.println(m.log(message));}
 
     int chosingPort() {
         int i = 1;

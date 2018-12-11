@@ -21,11 +21,11 @@ import static javafx.geometry.Pos.CENTER;
  */
 public class InstancjaGry {
 
-    public ArrayList<PlanszaPola> polaPlanszy;
-    public PlanszaPola wybranyPionek = null;
-    public PlanszaPola ruszonyPionek;
-    public Boolean aktywnyNaPlanszy = false;
-    public List<String> moveRegister = new ArrayList<>();
+    private ArrayList<PlanszaPola> polaPlanszy;
+    private PlanszaPola wybranyPionek = null;
+    private PlanszaPola ruszonyPionek;
+    private Boolean aktywnyNaPlanszy = false;
+    List<String> moveRegister = new ArrayList<>();
     public Plansza board;
     int playerID;
     /**
@@ -35,17 +35,17 @@ public class InstancjaGry {
     private VBox vbox;
     private ClientApp clientapp;
 
-    public InstancjaGry(ClientApp clientapp, int playerID, int numberOfPlayers) {
+    InstancjaGry(ClientApp clientapp, int playerID, int numberOfPlayers) {
         this.clientapp = clientapp;
         this.playerID = playerID + 1;
         polaPlanszy = PlanszaFabryka.stworzLokalnaPlansze(61).stworzPlansze(this, numberOfPlayers);
         generateGUI();
     }
-    public VBox getVbox(){
+     VBox getVbox(){
         return this.vbox;
     }
     //create fields of board on ArrayList
-    public void unlockGame() {
+     void unlockGame() {
         aktywnyNaPlanszy = true;
         wybranyPionek = null;
         ruszonyPionek = null;
@@ -53,16 +53,16 @@ public class InstancjaGry {
         if (checkWin()) lockGame();
     }
 
-    public void lockGame() {
+     void lockGame() {
         aktywnyNaPlanszy = false;
         clientapp.startWaiting();
     }
 
-    public Boolean getAktywnyNaPlanszy() {
+     Boolean getAktywnyNaPlanszy() {
         return aktywnyNaPlanszy;
     }
 
-    public Boolean checkWin() {
+     Boolean checkWin() {
         for (PlanszaPola field : polaPlanszy) {
             if (field.pionek == playerID && field.winID != playerID) {
                 return false;
@@ -75,7 +75,7 @@ public class InstancjaGry {
    /**
     * Metoda odpowada za stworzenie planszy do rozgrywki
     */
-    void generateGUI() {
+    private void generateGUI() {
 
         //create new table in window to put fields
         gridpane = new GridPane();
@@ -112,8 +112,6 @@ public class InstancjaGry {
         //create button bar
         Button buttonEndTurn = new Button("Zakończ turę");
         buttonEndTurn.setOnMouseClicked(event -> lockGame());
-        Button buttonHowToPlay = new Button("Jak grać?");
-        buttonHowToPlay.setOnMouseClicked(event -> showHowToPlay());
         Button buttonAboutUs = new Button("O programie");
         buttonAboutUs.setOnMouseClicked(event -> showAutors());
         Label colorLabel = new Label("Twój kolor: ");
@@ -123,17 +121,22 @@ public class InstancjaGry {
         circle.setStroke(Color.GRAY);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setStrokeWidth(2);
-        ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonHowToPlay, buttonAboutUs, new Separator(),colorLabel,circle);
-
+     //   HBox hBox = new HBox(10);
+     //   hBox.getChildren().addAll(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(),colorLabel,circle);
+     //   hBox.setAlignment(CENTER);
+        ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(),colorLabel,circle);
+      //  ToolBar toolbar = new ToolBar(hBox);
+        toolbar.getOrientation();
 
         vbox = new VBox();
+        vbox.setAlignment(CENTER);
         vbox.getChildren().addAll(toolbar, gridpane);
         vbox.setVgrow(gridpane, Priority.ALWAYS);
 
     }
 
     //show information about authors
-    void showAutors() {
+    private void showAutors() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
         alert.setHeaderText("Autorzy programu");
@@ -141,15 +144,6 @@ public class InstancjaGry {
         alert.show();
     }
 
-    //show information about game rules
-    void showHowToPlay() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("");
-        alert.setHeaderText("Skrócona instrukcja");
-        alert.setContentText("Celem gry jest ustawienie wszystkich \n swoich pionów w przeciwległym promieniu.\n " +
-                "Podczas tury można poruszyć się jednym pionem \nna sąsiadujące pole lub przeskoczyć dowolną ilość innych pionów.");
-        alert.show();
-    }
 
     //select or deselect pawn in gui, draw stroke
     public void selectPawn(PlanszaPola pos) {

@@ -1,5 +1,9 @@
 package App;
 
+import App.Decorators.ClientMessageDecorator;
+import App.Decorators.MessageDecorator;
+import App.Decorators.ServerMessageDecorator;
+
 import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +13,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
 
 import static java.lang.Integer.parseInt;
 
@@ -34,6 +38,7 @@ public class ClientViewer extends Thread {
     private boolean host;
     private String address;
     public Boolean activityOfClient = true;
+    private MessageDecorator m = new ClientMessageDecorator();
 
     //reference to client
     ClientApp clientapp;
@@ -53,11 +58,9 @@ public class ClientViewer extends Thread {
 
     }
 
-    public void threadEnd() {
-        activityOfClient = false;
-    }
+    //public void threadEnd() { activityOfClient = false; }
 
-    public  void log(String message){ System.out.println(message); }
+    public  void log(String message){ System.out.println(m.log(message)); }
 
     /**
      * Metoda odopwiedzialna za łączenie się z serwerem
@@ -73,13 +76,13 @@ public class ClientViewer extends Thread {
         } catch (IOException e) {
             System.out.println("Socket Exception: Brak Input/Output");
         }
-        log("Client socket " + socket.getLocalPort());
+        log("Socket " + socket.getLocalPort());
         conect();
     }
 
     public void conect() {
         out.println("CONECT");
-        log("klientID " + klientID + " conect ");
+        log("ClientID " + klientID + " conect ");
         try {
             while (input.equals("")) { //Dopóki input jest pusty pobierz z socketa Stream
                 input = in.readLine();
@@ -88,9 +91,9 @@ public class ClientViewer extends Thread {
             comand = parserOfCommand(input);
             if (klientID == 0) {
                 klientID = parseInt(comand.get(0));
-                log("client klientID " + klientID);
+                log("klientID " + klientID);
                 socket = new Socket(address, parseInt(comand.get(1)));
-                log("Client client id " + comand.get(0) + "  port  " + parseInt(comand.get(1)) + " ustawiono " + socket.getLocalPort());
+                log("klient id " + comand.get(0) + "  port  " + parseInt(comand.get(1)) + " ustawiono " + socket.getLocalPort());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -132,7 +135,7 @@ public class ClientViewer extends Thread {
                 comand = parserOfCommand(input);
                 System.out.println(comand);
                 if ((comand.get(0).equals("START"))) {
-                    log("CLIENT START " + klientID + " : " + input);
+                    log("START " + klientID + " : " + input);
                     numberOfHuman = parseInt(comand.get(1));
                     numberOfBots = parseInt(comand.get(2));
                     clientapp.startLocalGame(graczID, numberOfHuman + numberOfBots);
@@ -163,10 +166,10 @@ public class ClientViewer extends Thread {
                     if ((comand.get(0).equals("BOARDS"))) {
                         /*
                          */
-                        log("get games " + input);
+                        log("Get Games " + input);
                         conectBoardID = parseInt(comand.get(1));
                         cclientIDOnBoard = parseInt(comand.get(2)) + parseInt(comand.get(4));
-                        log("cclientIDOnBoard to "+ cclientIDOnBoard);
+                        log("ID On Board to "+ cclientIDOnBoard);
                         conectToGame(conectBoardID, cclientIDOnBoard);
                         break;
                     } else {
@@ -186,7 +189,7 @@ public class ClientViewer extends Thread {
     public void conectToGame(int conectBoardID, int cclientIDOnBoard) {
         this.graczID = cclientIDOnBoard;
         this.witchBoardOnServer = conectBoardID;
-        log("conect to " + witchBoardOnServer + " " + graczID);
+        log("Conect to " + witchBoardOnServer + " " + graczID);
         out.println("CONECTTOGAME " + klientID + " " + conectBoardID);
 
         this.start();
@@ -199,20 +202,19 @@ public class ClientViewer extends Thread {
 
 
     public void game() {
-        JFrame dialog;
         out.println("GAMEREADY " + klientID);
-      log("Klient jest w grze ");
+      log(" Jest w grze ");
         try {
             input = "";
             while (input.equals("") && activityOfClient) {
                 input = in.readLine();
-                log("client in " + input);
+                log("In " + input);
                 comand = parserOfCommand(input);
                 switch (comand.get(0)) {
                     case "YOURTURN":
-                        log("client YOURTURN");
+                        log(" YOURTURN");
                         clientapp.instancjaGry.unlockGame();
-                        log("client AFTER UNLOCK");
+                        log(" AFTER UNLOCK");
                         while (clientapp.instancjaGry.getAktywnyNaPlanszy() && activityOfClient) {
                             try {
                                 Thread.sleep(250);
@@ -220,16 +222,16 @@ public class ClientViewer extends Thread {
                                 System.out.println("vuhguhgu");
                             }
                         }
-                        log("waiting client ");
+                        log("Waiting ");
                         StringBuilder moves = new StringBuilder();
-                        log("clietn waiting fo move ");
+                        log("Waiting for move ");
                         if (clientapp.instancjaGry.moveRegister.size() != 0) {
                             List<String> moveList = new ArrayList<>();
                             moveList.clear();
                             moveList = clientapp.instancjaGry.moveRegister;
                             for (String s : moveList) {
                                 moves.append(" ").append(s);
-                                log("moves clietn " + s);
+                                log("Moves  " + s);
                             }
                         } else moves = new StringBuilder(" PASS");
                         clientapp.instancjaGry.lockGame();
@@ -280,12 +282,12 @@ public class ClientViewer extends Thread {
     /**
      * Metoda króra wycina nam komendy i zwraca je jako Arraylist
      * @param line
-     * @return
+     * @return list
      */
     public List parserOfCommand(String line) {
         List<String> list = new ArrayList<>();
-        while (!Objects.equals(line, "")) {
-            if (line.contains(" ")) {
+        while (line != ("")) {
+            if (line.indexOf(" ") != -1) {
                 list.add(line.substring(0, line.indexOf(" ")));
                 line = line.substring(line.indexOf(" ") + 1);
             } else {

@@ -17,6 +17,4 @@ public class Człowiek extends Gracz {
         System.out.println("HUMAN cclietnID " + clientID);
         bot = false;
     }
-
-
 }
