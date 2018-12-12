@@ -39,15 +39,15 @@ public class PlanszaPola extends Circle {
      */
     public PlanszaPola(InstancjaGry instancjaGry, int id, int winID, int kolumna, int wiersz) {
 
-        this.pionek = id;
         this.instancjaGry = instancjaGry;
+        this.pionek = id;
+        this.winID = winID;
         this.kolumna = kolumna;
         this.wiersz = wiersz;
-        this.winID = winID;
 
         tempRef = this;
 
-        setFill(KoloryModeli.Kolor.Kolory(pionek));
+        setFill(KoloryModeli.Kolor.Kolory(pionek)); //Kolorowanie pionu
         setStroke(Color.ALICEBLUE);
         setStrokeType(StrokeType.INSIDE);
         setStrokeWidth(2);

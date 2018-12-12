@@ -6,14 +6,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import static java.lang.Math.abs;
 
 import App.Plansza.KoloryModeli;
 import App.Plansza.PlanszaFabryka;
 import App.Plansza.Plansza;
 import App.Plansza.PlanszaPola;
+
 import static javafx.geometry.Pos.CENTER;
 
 /**
@@ -41,11 +44,13 @@ public class InstancjaGry {
         polaPlanszy = PlanszaFabryka.stworzLokalnaPlansze(61).stworzPlansze(this, numberOfPlayers);
         generateGUI();
     }
-     VBox getVbox(){
+
+    VBox getVbox() {
         return this.vbox;
     }
+
     //create fields of board on ArrayList
-     void unlockGame() {
+    void unlockGame() {
         aktywnyNaPlanszy = true;
         wybranyPionek = null;
         ruszonyPionek = null;
@@ -53,16 +58,16 @@ public class InstancjaGry {
         if (checkWin()) lockGame();
     }
 
-     void lockGame() {
+    void lockGame() {
         aktywnyNaPlanszy = false;
         clientapp.startWaiting();
     }
 
-     Boolean getAktywnyNaPlanszy() {
+    Boolean getAktywnyNaPlanszy() {
         return aktywnyNaPlanszy;
     }
 
-     Boolean checkWin() {
+    Boolean checkWin() {
         for (PlanszaPola field : polaPlanszy) {
             if (field.pionek == playerID && field.winID != playerID) {
                 return false;
@@ -72,9 +77,9 @@ public class InstancjaGry {
         return true;
     }
 
-   /**
-    * Metoda odpowada za stworzenie planszy do rozgrywki
-    */
+    /**
+     * Metoda odpowada za stworzenie planszy do rozgrywki
+     */
     private void generateGUI() {
 
         //create new table in window to put fields
@@ -121,11 +126,11 @@ public class InstancjaGry {
         circle.setStroke(Color.GRAY);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setStrokeWidth(2);
-     //   HBox hBox = new HBox(10);
-     //   hBox.getChildren().addAll(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(),colorLabel,circle);
-     //   hBox.setAlignment(CENTER);
-        ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(),colorLabel,circle);
-      //  ToolBar toolbar = new ToolBar(hBox);
+        //   HBox hBox = new HBox(10);
+        //   hBox.getChildren().addAll(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(),colorLabel,circle);
+        //   hBox.setAlignment(CENTER);
+        ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(), colorLabel, circle);
+        //  ToolBar toolbar = new ToolBar(hBox);
         toolbar.getOrientation();
 
         vbox = new VBox();
@@ -145,28 +150,13 @@ public class InstancjaGry {
     }
 
 
-    //select or deselect pawn in gui, draw stroke
-    public void selectPawn(PlanszaPola pos) {
-        if (wybranyPionek != null) {
-            wybranyPionek.setStroke(Color.GRAY);
-            wybranyPionek.setStrokeWidth(2);
-            moveAndSendPawn(wybranyPionek, pos);
-            wybranyPionek = null;
-        } else {
-            if ((pos.pionek) == playerID) {
-                wybranyPionek = pos;
-                wybranyPionek.setStroke(Color.ORANGE);
-                wybranyPionek.setStrokeWidth(5);
-            }
-        }
-    }
 
     //move pawn from oldPos to newPos
     public boolean movePawn(PlanszaPola oldPos, PlanszaPola newPos) {
         if (testMove(oldPos, newPos)) {
-            newPos.pionek = oldPos.pionek;
+            newPos.pionek = oldPos.pionek; //podmieniamy pionki
             oldPos.pionek = 0;
-            newPos.setFill(KoloryModeli.Kolor.Kolory(newPos.pionek));
+            newPos.setFill(KoloryModeli.Kolor.Kolory(newPos.pionek));  //wypełniamy
             oldPos.setFill(KoloryModeli.Kolor.Kolory(oldPos.pionek));
             ruszonyPionek = newPos;
             return true;
@@ -195,7 +185,14 @@ public class InstancjaGry {
         return false;
     }
 
-    //return field with specified column and wiersz
+
+
+    /**
+     * Metoda pomicnicza przy sprawdzaniu poprawnościu ruch
+     * @param col - kolumna nowego piona
+     * @param row - wiersz nowego piona
+     * @return - szukany pion
+     */
     public PlanszaPola findField(int col, int row) {
         for (PlanszaPola field : polaPlanszy) {
             if (field.kolumna == col && field.wiersz == row) {
@@ -205,23 +202,39 @@ public class InstancjaGry {
         return null;
     }
 
-    //check correctness of move
+    public void badMove(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Niepoprawny ruch");
+        alert.setHeaderText("Informacja");
+        alert.setContentText("Nie możesz opuszczać docelowego narożnika \n wchodząc do niego.");
+        alert.show();
+    }
+
+    /**
+     * Metoda odpowiedzialna za prawadzanie popranościu ruchu.
+     * @param oldPos - stara pozycja na której jesteśmy
+     * @param newPos - nowa pozycja na którą chemy się dostać
+     * @return true or false
+     */
     public boolean testMove(PlanszaPola oldPos, PlanszaPola newPos) {
-        if (newPos.pionek == 0 && oldPos != newPos) {
-            if (ruszonyPionek == null) {
-                if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.wiersz - newPos.wiersz) <= 1)) {
-                    return true;
-                }
+        if (newPos.pionek == 0 && oldPos != newPos) {//jeśli wybrany pionek nie jest pionkiem gracza,tylko planszowym
+            if (ruszonyPionek == null) {//jeśli to 1 przeskok
+                if ((oldPos.pionek == oldPos.winID && newPos.winID == 0))  {badMove(); return false;} // nie można opuszczać zwycięskiego trójkąta
+                    if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.wiersz - newPos.wiersz) <= 1)) {
+                        return true;
+                    }
+
             }
             if (ruszonyPionek == null || ruszonyPionek == oldPos) {
+                if ((oldPos.pionek == oldPos.winID &&  newPos.winID == 0))  {badMove(); return false;}
                 if (oldPos.wiersz == newPos.wiersz) {
-                    //right
+                    //prawo
                     if (newPos.kolumna == oldPos.kolumna + 4) {
                         if (findField(oldPos.kolumna + 2, oldPos.wiersz).pionek > 0) {
                             return true;
                         }
                     }
-                    //left
+                    //lewo
                     if (newPos.kolumna == oldPos.kolumna - 4) {
                         if (findField(oldPos.kolumna - 2, oldPos.wiersz).pionek > 0) {
                             return true;
@@ -230,13 +243,13 @@ public class InstancjaGry {
                 }
 
                 if (newPos.wiersz == oldPos.wiersz + 2) {
-                    //right up
+                    //prawy góra
                     if (newPos.kolumna == oldPos.kolumna + 2) {
                         if (findField(oldPos.kolumna + 1, oldPos.wiersz + 1).pionek > 0) {
                             return true;
                         }
                     }
-                    //left up
+                    //lewy góra
                     if (newPos.kolumna == oldPos.kolumna - 2) {
                         if (findField(oldPos.kolumna - 1, oldPos.wiersz + 1).pionek > 0) {
                             return true;
@@ -245,13 +258,13 @@ public class InstancjaGry {
                 }
 
                 if (newPos.wiersz == oldPos.wiersz - 2) {
-                    //right down
+                    //prawy dół
                     if (newPos.kolumna == oldPos.kolumna + 2) {
                         if (findField(oldPos.kolumna + 1, oldPos.wiersz - 1).pionek > 0) {
                             return true;
                         }
                     }
-                    //left down
+                    //lewy dół
                     if (newPos.kolumna == oldPos.kolumna - 2) {
                         return findField(oldPos.kolumna - 1, oldPos.wiersz - 1).pionek > 0;
                     }
