@@ -33,8 +33,8 @@ public abstract class ServerPlansza {
 
     /**
      * Poruszanie się pionkiem przez server
-     * @param oldPos
-     * @param newPos
+     * @param oldPos stara pozycja
+     * @param newPos nowa pozycja
      */
     public void movePawnServer(ServerPlanszaPola oldPos, ServerPlanszaPola newPos) {
         newPos.pionek = oldPos.pionek;
@@ -43,9 +43,9 @@ public abstract class ServerPlansza {
 
     /**
      * Zwraca pole z określoną kolumną i wierszem
-     * @param col
-     * @param row
-     * @return field or null
+     * @param col kolumna
+     * @param row wiersz
+     * @return pole albo null
      */
     public ServerPlanszaPola findField(int col, int row) {
         for (ServerPlanszaPola field : serverBoardFields) {
@@ -57,8 +57,8 @@ public abstract class ServerPlansza {
     }
 
     /**Sprawdzanie poprawności ruchu
-     * @param oldPos
-     * @param newPos
+     * @param oldPos stara pozycja
+     * @param newPos nowa pozycja
      * @return true or false
      */
     public boolean testMove(ServerPlanszaPola oldPos, ServerPlanszaPola newPos) {

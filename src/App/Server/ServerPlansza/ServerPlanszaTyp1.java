@@ -7,6 +7,11 @@ public class ServerPlanszaTyp1 extends ServerPlansza{
     public ArrayList<ServerPlanszaPola> serverPlanszaPola = new ArrayList<>();
     int playerID;
 
+    /**
+     * Metoda odpowiedzialna za stworzenie planszy ze strony serwera.
+     * @param numberOfPlayers - liczba graczy
+     * @return gotową planszę
+     */
     public ArrayList<ServerPlanszaPola> constructBoard(int numberOfPlayers) {
 
         switch (numberOfPlayers) {

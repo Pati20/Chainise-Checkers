@@ -1,8 +1,11 @@
 package App.Server.Gracze.Bot;
 
+/**
+ * Klasa reprezentująca pionki ze strony serwera/bota.
+ */
 public class Pionek {
-    public int column;
-    public int row;
+     int column;
+     int row;
     boolean enabled;
 
     public Pionek(int column, int row){

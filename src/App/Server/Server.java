@@ -33,9 +33,7 @@ public class Server {
             log("Błąd nasłuchu na porcie 9999");
             e.printStackTrace();
         }
-
         this.listenSocket();
-
     }
 
     public static void main(String[] args) {
@@ -43,6 +41,9 @@ public class Server {
         server.listenSocket();
     }
 
+    /**
+     * Metoda odpowiedzialna za początek nasłuchu na gnieździe.
+     */
     private void listenSocket() {
         while (true) {
             log("SOCKET START " + clientCounter);
@@ -53,11 +54,19 @@ public class Server {
         }
     }
 
+    /**
+     * Metoda wyświetlająca logi servera
+     * @param message
+     */
     public void log(String message) {
         MessageDecorator m = new ServerMessageDecorator();
         System.out.println(m.log(message));
     }
 
+    /**
+     * Metoda dopasowywująca port dla danego połączenia
+     * @return port
+     */
     int chosingPort() {
         int i = 1;
         int port = 0;

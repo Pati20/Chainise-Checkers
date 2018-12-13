@@ -2,9 +2,8 @@ package App;
 
 import App.Decorators.ClientMessageDecorator;
 import App.Decorators.MessageDecorator;
-import App.Decorators.ServerMessageDecorator;
+import javafx.scene.control.Alert;
 
-import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,8 +12,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
-
 import static java.lang.Integer.parseInt;
 
 
@@ -37,27 +34,23 @@ public class ClientViewer extends Thread {
     private  int witchBoardOnServer;
     private boolean host;
     private String address;
-    public Boolean activityOfClient = true;
+    Boolean activityOfClient = true;
+    boolean goodConnection;
 
     //reference to client
     ClientApp clientapp;
 
-    public ClientViewer() {
-    }
-
-    public ClientViewer(ClientApp clientapp, int nnubmerOfHuman, int nnumberOfBots, boolean hhost, String address) {
-        numberOfBots = nnumberOfBots;
-        numberOfHuman = nnubmerOfHuman;
+    public ClientViewer(ClientApp clientapp, int nubmerOfHuman, int numberOfBots, boolean host, String address) {
+        this.numberOfBots = numberOfBots;
+        numberOfHuman = nubmerOfHuman;
         this.address = address;
-        log("Liczba graczy "+nnubmerOfHuman + " : botów " + nnumberOfBots);
-        host = hhost;
+        log("Liczba graczy "+nubmerOfHuman + " : botów " + numberOfBots);
+        this.host = host;
         this.clientapp = clientapp;
         log("Zaczął grę start");
         this.SocketListener();
 
     }
-
-    //public void threadEnd() { activityOfClient = false; }
 
     /**
      * Metoda która wypisuje nam informacje o aktualnym przebiegu rozgrywki ze strony Clienta
@@ -71,22 +64,32 @@ public class ClientViewer extends Thread {
     /**
      * Metoda odopwiedzialna za łączenie się z serwerem
      */
-    public void SocketListener() {
-
+     void SocketListener() {
+         goodConnection = true;
         try {
             socket = new Socket(address, 9999);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
+            goodConnection =false;
             log("UnknownHost Exception: localhost");
         } catch (IOException e) {
-            System.out.println("Socket Exception: Brak Input/Output");
+            goodConnection =false;
+            log("Socket Exception: Brak Input/Output");
         }
-        log("Socket " + socket.getLocalPort());
-        conect();
+       if(goodConnection){
+           log("Socket " + socket.getLocalPort());
+           conect();
+       }else {
+           Alert alert = new Alert(Alert.AlertType.INFORMATION);
+           alert.setTitle("Brak aktywnego servera");
+           alert.setHeaderText("Informacja");
+           alert.setContentText("Proszę o uruchomienie servera przed rozgrywką.");
+           alert.show();
+       }
     }
 
-    public void conect() {
+     void conect() {
         out.println("CONECT");
         log("ClientID " + klientID + " conect ");
         try {
@@ -123,6 +126,7 @@ public class ClientViewer extends Thread {
                 }
             }
         } catch (IOException e) {
+            log("Zerwano połączenie");
             e.printStackTrace();
         }
         out.println("START " + klientID);
@@ -304,5 +308,6 @@ public class ClientViewer extends Thread {
         return list;
     }
 
+    Boolean getGoodConnection(){return goodConnection;}
 
 }

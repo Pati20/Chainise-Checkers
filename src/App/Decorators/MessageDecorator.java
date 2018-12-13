@@ -5,10 +5,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Abstrakcyjna klasa - dekorator wiadomości
+ */
 public abstract class MessageDecorator {
 
      String Message;
 
+    /**
+     * Ustawia message na obecną datę.
+     */
     public MessageDecorator(){
         this.Message = getDate();
     }
@@ -21,6 +27,11 @@ public abstract class MessageDecorator {
         return dateFormat.format(currentDate);
     }
 
+    /**
+     * Metoda do implementacji w klasach pokrewnych.
+     * @param message - udekorowana wiadomość
+     * @return - String message
+     */
     public abstract String log(String message);
 }
 

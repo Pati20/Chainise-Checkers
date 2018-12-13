@@ -9,6 +9,11 @@ public enum KoloryModeli {
 
     Kolor;
 
+    /**
+     * Metoda odpowiedzialna za kolorowanie modeli
+     * @param i - numer koloru
+     * @return color
+     */
     public Color Kolory(int i) {
         switch (i) {
             case 0:

@@ -19,6 +19,12 @@ public class BotGame extends Bot {
     private List<Pionek> pawn;
     private List<Pionek> win;
 
+    /**
+     * Konstruktor klasy BotGame
+     * @param nnumber - numer gracza
+     * @param numberOfPlayers - liczba graczy
+     * @param plansza - aktualna plansza
+     */
     public BotGame(int nnumber, int numberOfPlayers, StaraPlansza plansza) {
         super(nnumber, numberOfPlayers, plansza);
         this.numberOfPlayers = numberOfPlayers;
@@ -28,16 +34,27 @@ public class BotGame extends Bot {
         bot = true;
     }
 
+    /**
+     * Metoda informaująca o wykonanych akcjach ze strony bota
+     * @param message
+     */
     public  void log(String message){
         MessageDecorator m = new BotMessageDecorator();
         System.out.println(m.log(message)); }
 
+    /**
+     * Metoda odpowiedzialna za ustawienie początkowe bota.
+     */
     @Override
     public void gameStart() {
         pawn = setMyPawns(plansza);
         win = setMyPawnsWin(plansza);
     }
 
+    /**
+     * Metoda odpowiedzialna za prowadzenia aktualnej tury oraz zwracania ruchów ze strony bota.
+     * @return ruch
+     */
     @Override
     public String Turn() {
         moves = "";
@@ -95,7 +112,7 @@ public class BotGame extends Bot {
                 if (0 == plansza.localboard.serverBoardFields.get(plansza.localboard.serverBoardFields.indexOf(plansza.localboard.findField(currentPawn.column + moveCol, currentPawn.row + moveRow))).pionek
                         && plansza.localboard.testMove(plansza.localboard.findField(currentPawn.column, currentPawn.row), plansza.localboard.findField(currentPawn.column + moveCol, currentPawn.row + moveRow))) {
 
-                    moves = "ENDTURN " + Integer.toString(currentPawn.column) + " " + Integer.toString(currentPawn.row) + " " + Integer.toString(currentPawn.column + moveCol) + " " + Integer.toString(currentPawn.row + moveRow);
+                    moves = "ENDTURN " + currentPawn.column + " " + currentPawn.row + " " + (currentPawn.column + moveCol) + " " + (currentPawn.row + moveRow);
                     pawn.get(pawn.indexOf(currentPawn)).row = currentPawn.row + moveRow;
                     pawn.get(pawn.indexOf(currentPawn)).column = currentPawn.column + moveCol;
                     break;

@@ -27,16 +27,16 @@ public class ServerWatki extends Thread {
     private PrintWriter out = null;
     private String line = "";
 
-    ServerWatki(int pport, int clientNumber, Server sserverSide, ServerSocket sserverSocket) {
-        this.port = pport;
+    ServerWatki(int port, int clientNumber, Server serverSide, ServerSocket serverSocket) {
+        this.port = port;
         try {
-            client = sserverSocket.accept();
-            serverSocket = new ServerSocket(port);
+            client = serverSocket.accept();
+            this.serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
-            log("NOT ACDEPTED OR CANNOT MAKE THREAT SOSCKET ON PORT: " + port);
+            log("NOT ACTEPTED OR CANNOT MAKE THREAT SOCKET ON PORT: " + this.port);
         }
         this.clientID = clientNumber;
-        this.server = sserverSide;
+        this.server = serverSide;
     }
 
     public void log(String message) {
@@ -63,11 +63,16 @@ public class ServerWatki extends Thread {
         }
     }
 
+    /**
+     * Metoda odpowiedzialna za przetwarzanie komunikatów od klienta.
+     * @param line - rozkaz od klienta.
+     * @return odpowiedź
+     */
     private String DoSomething(String line) {
         StringBuilder response = new StringBuilder();
         List<String> comand = parserOfCommand(line);
         int witch;
-        log("Command " + comand.get(0));
+        log("Command form client: " + comand.get(0));
         switch (comand.get(0)) {
             case "CONECT":
                 response = new StringBuilder(clientID + " " + port);
@@ -215,6 +220,9 @@ public class ServerWatki extends Thread {
     }
 
 
+    /**
+     * Metoda odpowiedzialna za przetwarzanie poleceń ze strony bota.
+     */
     void botMove() {
         List<String> movelist = parserOfCommand(server.staraPlanszas.get(boardID).players.get(server.staraPlanszas.get(boardID).pbecnaTuraGracza).Turn());
         log("Moves " + movelist);
@@ -248,6 +256,11 @@ public class ServerWatki extends Thread {
 
     }
 
+    /**
+     * Metoda odpowiedzialna za konwertowanie wiadomości ze strumienia na arraylistę.
+     * @param line - otrzymany strumień poleceń
+     * @return arraylist poleceń
+     */
     private List parserOfCommand(String line) {
         List<String> list = new ArrayList<>();
         while (!Objects.equals(line, "")) {
@@ -263,6 +276,13 @@ public class ServerWatki extends Thread {
     }
 
 
+    /**
+     * Metoda odpowiedzialna za dodawanie nowych planszy.
+     * @param playerID
+     * @param numberOfHuans
+     * @param numberOfBots
+     * @return
+     */
     public int addNewBoard(int playerID, int numberOfHuans, int numberOfBots) {
         int witch = server.staraPlanszas.size();
         server.staraPlanszas.add(new StaraPlansza(witch, playerID, numberOfHuans, numberOfBots));

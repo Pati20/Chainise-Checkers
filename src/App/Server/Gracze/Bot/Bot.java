@@ -7,6 +7,9 @@ import App.Server.StaraPlansza;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Klasa reprezentująca poczynania bota
+ */
 public class Bot extends Gracz {
 
     int liczbaGraczy;
@@ -14,7 +17,7 @@ public class Bot extends Gracz {
     int narożnik;
     StaraPlansza plansza;
 
-
+    /** Konstruktor klasy ustawia wszystkie podana parametry */
     public Bot(int nnumber, int liczbaGraczy, StaraPlansza plansza) {
         super(nnumber, liczbaGraczy,plansza);
         this.liczbaGraczy = liczbaGraczy;
@@ -25,6 +28,11 @@ public class Bot extends Gracz {
 
     }
 
+    /**
+     * Metoda odpowiedzialna za ustawianie pionków na planszy ze strony bota
+     * @param plansza - nasza plansza
+     * @return zwraca pionka
+     */
     public List<Pionek> setMyPawns(StaraPlansza plansza){
         List<Pionek> pawn = new ArrayList<>();
         for(ServerPlanszaPola field : plansza.localboard.serverBoardFields){
@@ -34,6 +42,11 @@ public class Bot extends Gracz {
         return pawn;
     }
 
+    /**
+     * Metoda odpowiedzialna za dodawanie wygrywających pionków.
+     * @param plansza
+     * @return
+     */
     public List<Pionek> setMyPawnsWin(StaraPlansza plansza){
         List<Pionek> pawn = new ArrayList<>();
         for( ServerPlanszaPola field : plansza.localboard.serverBoardFields){

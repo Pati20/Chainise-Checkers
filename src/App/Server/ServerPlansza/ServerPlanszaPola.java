@@ -20,6 +20,5 @@ public class ServerPlanszaPola {
         this.kolumna = kolumna;
         this.row = row;
         this.winID = winID;
-
     }
 }
