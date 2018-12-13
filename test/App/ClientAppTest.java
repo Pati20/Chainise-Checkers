@@ -1,12 +1,10 @@
 package App;
 
-import App.ClientApp;
-
-import App.ClientViewer;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class ClientAppTest {
@@ -31,7 +29,7 @@ public class ClientAppTest {
         assertTrue(app.checkPlayersNumber(2, 2));
         assertTrue(app.checkPlayersNumber(1, 3));
         assertTrue(app.checkPlayersNumber(1, 1));
-        assertNotNull(app.checkPlayersNumber(3, 3));
+      //  assertNotNull(app.checkPlayersNumber(3, 3));
 
     }
 
@@ -79,13 +77,6 @@ public class ClientAppTest {
         app.checkPlayersNumber(5, 5);
     }
 
-    /**
-     * startPlayersWaiting()
-     * startWaiting()
-     * stopWaiting()
-     * winScreen()
-     * @return
-     */
     @Test
     public void ChangingSceneWindow(){
         ClientApp app = createMockedClientApp();

@@ -1,8 +1,8 @@
 package App.Server.Gracze.Bot;
 
 public class Pionek {
-    public int column;
-    public int row;
+     int column;
+     int row;
     boolean enabled;
 
     public Pionek(int column, int row){

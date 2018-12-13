@@ -12,7 +12,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.*;
 

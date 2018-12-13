@@ -28,6 +28,10 @@ public class BotGame extends Bot {
         bot = true;
     }
 
+    /**
+     * Metoda informaująca o wykonanych akcjach ze strony bota
+     * @param message
+     */
     public  void log(String message){
         MessageDecorator m = new BotMessageDecorator();
         System.out.println(m.log(message)); }
@@ -95,7 +99,7 @@ public class BotGame extends Bot {
                 if (0 == plansza.localboard.serverBoardFields.get(plansza.localboard.serverBoardFields.indexOf(plansza.localboard.findField(currentPawn.column + moveCol, currentPawn.row + moveRow))).pionek
                         && plansza.localboard.testMove(plansza.localboard.findField(currentPawn.column, currentPawn.row), plansza.localboard.findField(currentPawn.column + moveCol, currentPawn.row + moveRow))) {
 
-                    moves = "ENDTURN " + Integer.toString(currentPawn.column) + " " + Integer.toString(currentPawn.row) + " " + Integer.toString(currentPawn.column + moveCol) + " " + Integer.toString(currentPawn.row + moveRow);
+                    moves = "ENDTURN " + currentPawn.column + " " + currentPawn.row + " " + (currentPawn.column + moveCol) + " " + (currentPawn.row + moveRow);
                     pawn.get(pawn.indexOf(currentPawn)).row = currentPawn.row + moveRow;
                     pawn.get(pawn.indexOf(currentPawn)).column = currentPawn.column + moveCol;
                     break;

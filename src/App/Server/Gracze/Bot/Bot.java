@@ -7,6 +7,9 @@ import App.Server.StaraPlansza;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Klasa reprezentująca poczynania bota
+ */
 public class Bot extends Gracz {
 
     int liczbaGraczy;
@@ -14,7 +17,7 @@ public class Bot extends Gracz {
     int narożnik;
     StaraPlansza plansza;
 
-
+    /** Konstruktor klasy ustawia wszystkie podana parametry */
     public Bot(int nnumber, int liczbaGraczy, StaraPlansza plansza) {
         super(nnumber, liczbaGraczy,plansza);
         this.liczbaGraczy = liczbaGraczy;

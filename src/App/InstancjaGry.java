@@ -1,5 +1,8 @@
 package App;
 
+import App.Plansza.KoloryModeli;
+import App.Plansza.PlanszaFabryka;
+import App.Plansza.PlanszaPola;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -11,12 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
-
-import App.Plansza.KoloryModeli;
-import App.Plansza.PlanszaFabryka;
-import App.Plansza.Plansza;
-import App.Plansza.PlanszaPola;
-
 import static javafx.geometry.Pos.CENTER;
 
 /**
@@ -29,7 +26,6 @@ public class InstancjaGry {
     private PlanszaPola ruszonyPionek;
     private Boolean aktywnyNaPlanszy = false;
     List<String> moveRegister = new ArrayList<>();
-    public Plansza board;
     int playerID;
     /**
      * Deklaracja Gui elementów
@@ -48,8 +44,10 @@ public class InstancjaGry {
     VBox getVbox() {
         return this.vbox;
     }
+    Boolean getaktywnyNaPlanszy(){ return  aktywnyNaPlanszy;}
+    PlanszaPola getWybranyPionek(){return wybranyPionek;}
+    PlanszaPola getRuszonyPionek(){return ruszonyPionek;}
 
-    //create fields of board on ArrayList
     void unlockGame() {
         aktywnyNaPlanszy = true;
         wybranyPionek = null;
@@ -82,7 +80,7 @@ public class InstancjaGry {
      */
     private void generateGUI() {
 
-        //create new table in window to put fields
+        //tworzenie nowej tabeli to ustawienia pól
         gridpane = new GridPane();
         gridpane.setAlignment(CENTER);
         for (int i = 0; i < 25; i++) {
@@ -103,18 +101,18 @@ public class InstancjaGry {
             gridpane.getRowConstraints().add(row);
         }
 
-        //declare positions of fields in gui table
+        //deklaracja pozycji pul w gui tabeli
         for (PlanszaPola i : polaPlanszy) {
             GridPane.setConstraints(i, i.kolumna, i.wiersz);
         }
 
-        //add all fields to gui table
+        //dodaj wszystkie pola do tabeli gui
         gridpane.getChildren().addAll(polaPlanszy);
 
-        //set margins of whole table
+        //dodaj margines do wszystkich tablel
         gridpane.setPadding(new Insets(30));
 
-        //create button bar
+        //tworzenie buuttonbar
         Button buttonEndTurn = new Button("Zakończ turę");
         buttonEndTurn.setOnMouseClicked(event -> lockGame());
         Button buttonAboutUs = new Button("O programie");
@@ -126,11 +124,7 @@ public class InstancjaGry {
         circle.setStroke(Color.GRAY);
         circle.setStrokeType(StrokeType.INSIDE);
         circle.setStrokeWidth(2);
-        //   HBox hBox = new HBox(10);
-        //   hBox.getChildren().addAll(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(),colorLabel,circle);
-        //   hBox.setAlignment(CENTER);
         ToolBar toolbar = new ToolBar(buttonEndTurn, new Separator(), buttonAboutUs, new Separator(), colorLabel, circle);
-        //  ToolBar toolbar = new ToolBar(hBox);
         toolbar.getOrientation();
 
         vbox = new VBox();
@@ -140,7 +134,9 @@ public class InstancjaGry {
 
     }
 
-    //show information about authors
+    /**
+     * Meotda pokazuje informacje o autorach
+     */
     private void showAutors() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("");
@@ -149,9 +145,34 @@ public class InstancjaGry {
         alert.show();
     }
 
+    /**
+     * Metoda inicjalizująca ruch,
+     *
+     * @param pos - nasz pion, uruchamiany za pomocą Handlera z Plansza Pola
+     */
+    public void selectPawn(PlanszaPola pos) {
+        if (wybranyPionek != null) {//wybrany pion to pionna którego kliknęliśmy
+            wybranyPionek.setStroke(Color.GRAY);
+            wybranyPionek.setStrokeWidth(2);
+          //  System.out.println("wybranyPionek.kolumna "+ wybranyPionek.kolumna+"  wybranyPionek.wiersz "+wybranyPionek.wiersz+" pos.kolumna "+pos.kolumna+" pos.wiersz "+pos.wiersz);
+          //  System.out.println("wybranyPionek.winID "+ wybranyPionek.winID+"  wybranyPionek.pionek "+wybranyPionek.pionek+" pos.winID "+pos.winID+" pos.pionek "+pos.pionek);
+            moveAndSendPawn(wybranyPionek, pos);
+            wybranyPionek = null;
+        } else {
+            if ((pos.pionek) == playerID) {
+                wybranyPionek = pos;
+                wybranyPionek.setStroke(Color.ORANGE);
+                wybranyPionek.setStrokeWidth(5);
+            }
+        }
+    }
 
-
-    //move pawn from oldPos to newPos
+    /**
+     * Metoda odpowiedzialna za poruszanie się
+     * @param oldPos
+     * @param newPos
+     * @return
+     */
     public boolean movePawn(PlanszaPola oldPos, PlanszaPola newPos) {
         if (testMove(oldPos, newPos)) {
             newPos.pionek = oldPos.pionek; //podmieniamy pionki
@@ -164,7 +185,11 @@ public class InstancjaGry {
         return false;
     }
 
-    //move pawn by server_do_not_use //by Akageneko
+    /**
+     * Meotda odpowiedzialna za ruche ze strony servera
+     * @param oldPos stara pozycja piona
+     * @param newPos nowa pozycja piona
+     */
     public void movePawnServer(PlanszaPola oldPos, PlanszaPola newPos) {
         newPos.pionek = oldPos.pionek;
         oldPos.pionek = 0;
@@ -172,7 +197,12 @@ public class InstancjaGry {
         oldPos.setFill(KoloryModeli.Kolor.Kolory(oldPos.pionek));
     }
 
-    //move pawn from oldPos to newPos
+    /**
+     * Metoda odpowiedzialna za rejestrowanie ruchów
+     * @param oldPos
+     * @param newPos
+     * @return
+     */
     public boolean moveAndSendPawn(PlanszaPola oldPos, PlanszaPola newPos) {
         if (testMove(oldPos, newPos)) {
             movePawn(oldPos, newPos);
@@ -186,14 +216,14 @@ public class InstancjaGry {
     }
 
 
-
     /**
      * Metoda pomicnicza przy sprawdzaniu poprawnościu ruch
+     *
      * @param col - kolumna nowego piona
      * @param row - wiersz nowego piona
      * @return - szukany pion
      */
-    public PlanszaPola findField(int col, int row) {
+     PlanszaPola findField(int col, int row) {
         for (PlanszaPola field : polaPlanszy) {
             if (field.kolumna == col && field.wiersz == row) {
                 return field;
@@ -202,7 +232,7 @@ public class InstancjaGry {
         return null;
     }
 
-    public void badMove(){
+     void badMove() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Niepoprawny ruch");
         alert.setHeaderText("Informacja");
@@ -212,21 +242,28 @@ public class InstancjaGry {
 
     /**
      * Metoda odpowiedzialna za prawadzanie popranościu ruchu.
+     *
      * @param oldPos - stara pozycja na której jesteśmy
      * @param newPos - nowa pozycja na którą chemy się dostać
      * @return true or false
      */
-    public boolean testMove(PlanszaPola oldPos, PlanszaPola newPos) {
+     boolean testMove(PlanszaPola oldPos, PlanszaPola newPos) {
         if (newPos.pionek == 0 && oldPos != newPos) {//jeśli wybrany pionek nie jest pionkiem gracza,tylko planszowym
             if (ruszonyPionek == null) {//jeśli to 1 przeskok
-                if ((oldPos.pionek == oldPos.winID && newPos.winID == 0))  {badMove(); return false;} // nie można opuszczać zwycięskiego trójkąta
-                    if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.wiersz - newPos.wiersz) <= 1)) {
-                        return true;
-                    }
+                if ((oldPos.pionek == oldPos.winID && newPos.winID == 0)) {
+                    badMove();
+                    return false;
+                } // nie można opuszczać zwycięskiego trójkąta
+                if ((abs(oldPos.kolumna - newPos.kolumna) <= 2) && (abs(oldPos.wiersz - newPos.wiersz) <= 1)) {
+                    return true;
+                }
 
             }
             if (ruszonyPionek == null || ruszonyPionek == oldPos) {
-                if ((oldPos.pionek == oldPos.winID &&  newPos.winID == 0))  {badMove(); return false;}
+                if ((oldPos.pionek == oldPos.winID && newPos.winID == 0)) {
+                    badMove();
+                    return false;
+                }
                 if (oldPos.wiersz == newPos.wiersz) {
                     //prawo
                     if (newPos.kolumna == oldPos.kolumna + 4) {

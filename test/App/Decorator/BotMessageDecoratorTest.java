@@ -38,7 +38,7 @@ public class BotMessageDecoratorTest {
         String result = mess.log(testMessage);
         StringBuilder s = new StringBuilder();
 
-        String expected = s.append("[").append(messageDecorator.getDate()).append("]").append("[App.Server BOT]  ").append(testMessage).toString();
+        String expected = s.append("[").append(messageDecorator.getDate()).append("]").append("[Server BOT]  ").append(testMessage).toString();
         assertEquals(expected,result);
 
     }

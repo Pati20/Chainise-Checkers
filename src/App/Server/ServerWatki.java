@@ -27,16 +27,16 @@ public class ServerWatki extends Thread {
     private PrintWriter out = null;
     private String line = "";
 
-    ServerWatki(int pport, int clientNumber, Server sserverSide, ServerSocket sserverSocket) {
-        this.port = pport;
+    ServerWatki(int port, int clientNumber, Server serverSide, ServerSocket serverSocket) {
+        this.port = port;
         try {
-            client = sserverSocket.accept();
-            serverSocket = new ServerSocket(port);
+            client = serverSocket.accept();
+            this.serverSocket = new ServerSocket(this.port);
         } catch (IOException e) {
-            log("NOT ACDEPTED OR CANNOT MAKE THREAT SOSCKET ON PORT: " + port);
+            log("NOT ACDEPTED OR CANNOT MAKE THREAT SOSCKET ON PORT: " + this.port);
         }
         this.clientID = clientNumber;
-        this.server = sserverSide;
+        this.server = serverSide;
     }
 
     public void log(String message) {
@@ -67,7 +67,7 @@ public class ServerWatki extends Thread {
         StringBuilder response = new StringBuilder();
         List<String> comand = parserOfCommand(line);
         int witch;
-        log("Command " + comand.get(0));
+        log("Command form client: " + comand.get(0));
         switch (comand.get(0)) {
             case "CONECT":
                 response = new StringBuilder(clientID + " " + port);
