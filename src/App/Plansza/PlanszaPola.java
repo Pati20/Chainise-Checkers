@@ -56,7 +56,7 @@ public class PlanszaPola extends Circle {
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent t) {
-                instancjaGry.selectPawn(tempRef);
+            //    instancjaGry.selectPawn(tempRef);
             }
         });
     }

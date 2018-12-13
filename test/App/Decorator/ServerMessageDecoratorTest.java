@@ -40,7 +40,7 @@ public class ServerMessageDecoratorTest {
         String result = mess.log(testMessage);
         StringBuilder s = new StringBuilder();
 
-        String expected = s.append("[").append(messageDecorator.getDate()).append("]").append("[App.Server]  ").append(testMessage).toString();
+        String expected = s.append("[").append(messageDecorator.getDate()).append("]").append("[Server]  ").append(testMessage).toString();
         assertEquals(expected,result);
 
     }

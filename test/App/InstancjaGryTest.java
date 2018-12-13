@@ -16,10 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InstancjaGryTest {
+public class InstancjaGryTest  {
     @Mock
     ArrayList<PlanszaPola> polaPlanszy;
     @Mock
@@ -38,42 +37,54 @@ public class InstancjaGryTest {
     int playerID;
 
     @Mock
-    ClientApp clientapp;
+    ClientApp clientapp = mock(ClientApp.class);
 
     @Mock
     InstancjaGry instancjaGry;
 
+
+
     @Before
     public void setUp() {
-        this.clientapp = new ClientApp();
+        //this.clientapp = new ClientApp();
         this.playerID = playerID + 1;
         polaPlanszy = PlanszaFabryka.stworzLokalnaPlansze(61).stworzPlansze(instancjaGry, 2);
+       // instancjaGry = new InstancjaGry(mock(ClientApp.class),1,2);
     }
 
     @Test
     public void testUnlockGame()   {
         instancjaGry.unlockGame();
+        verify(instancjaGry,times(1)).unlockGame();
     }
 
     @Test
     public void testLockGame()   {
         instancjaGry.lockGame();
+        verify(instancjaGry,times(1)).lockGame();
+
     }
 
-//    @Test
-//    public void testCheckWin()   {
-//        Boolean result = instancjaGry.checkWin();
-//        Assert.assertEquals(Boolean.TRUE, result);
-//
-//    }
+    @Test
+    public void testCheckWin()   {
+        Boolean result = instancjaGry.checkWin();
+        Assert.assertEquals(Boolean.FALSE, result);
+
+        doReturn(true).when(instancjaGry).checkWin();
+        Assert.assertTrue(instancjaGry.checkWin());
+
+    }
 
     @Test
     public void testSelectPawn()   {
         instancjaGry.selectPawn(polaPlanszy.get(0));
         verify(instancjaGry,times(1)).selectPawn(polaPlanszy.get(0));
 
-        doNothing().when(instancjaGry).selectPawn(polaPlanszy.get(1));
+//        doNothing().when(instancjaGry).selectPawn(polaPlanszy.get(1));
         verify(instancjaGry,times(0)).selectPawn(polaPlanszy.get(1));
+
+        doCallRealMethod().when(instancjaGry).selectPawn(polaPlanszy.get(10));
+        instancjaGry.selectPawn(polaPlanszy.get(10));
     }
 
 
@@ -111,22 +122,41 @@ public class InstancjaGryTest {
 
     @Test
     public void testMovePawnServer()   {
-        instancjaGry.movePawnServer(new PlanszaPola(null, 0, 0, 0, 0), new PlanszaPola(null, 0, 0, 0, 0));
+        instancjaGry.movePawnServer(polaPlanszy.get(1),polaPlanszy.get(2));
+        verify(instancjaGry,times(1)).movePawnServer(polaPlanszy.get(1),polaPlanszy.get(2));
+
+//        doNothing().when(instancjaGry).movePawnServer(polaPlanszy.get(2),polaPlanszy.get(3));
+        verify(instancjaGry,times(0)).movePawnServer(polaPlanszy.get(2),polaPlanszy.get(3));
     }
 
     @Test
     public void testMoveAndSendPawn()   {
-        boolean result = instancjaGry.moveAndSendPawn(new PlanszaPola(null, 0, 0, 0, 0), new PlanszaPola(null, 0, 0, 0, 0));
+        PlanszaPola p1 = new PlanszaPola(instancjaGry, 2, 1, 9, 3);
+        PlanszaPola p2 = new PlanszaPola(instancjaGry, 0, 0, 8, 4);
+//        doReturn(true).when(instancjaGry).testMove(p1,p2);
+
+        doReturn(true).when(instancjaGry).moveAndSendPawn(p1,p2);
+        Boolean result = instancjaGry.moveAndSendPawn(p1,p2);
         Assert.assertEquals(true, result);
+
+         p1 = new PlanszaPola(instancjaGry, 2, 1, 9, 3);
+         p2 = new PlanszaPola(instancjaGry, 0, 0, 8, 6);
+
+        doReturn(false).when(instancjaGry).moveAndSendPawn(p1,p2);
+        result = instancjaGry.moveAndSendPawn(p1,p2);
+        Assert.assertEquals(false, result);
+
+
+
+
     }
 
     @Test
     public void testFindField()   {
-
         PlanszaPola  p1 = new PlanszaPola(instancjaGry, 2, 1, 9, 5);
-        doCallRealMethod().when(instancjaGry).findField(9,5);
+//        doCallRealMethod().when(instancjaGry).findField(9,5);
 
-       doReturn(new PlanszaPola(2,1,9,5)).when(instancjaGry).findField(9,5);
+       doReturn(p1 ).when(instancjaGry).findField(9,5);
         Assert.assertEquals(p1,instancjaGry.findField(9,5));
     }
 
@@ -161,5 +191,13 @@ public class InstancjaGryTest {
         Assert.assertFalse(result);
 
     }
+
+    @Test
+    public void testbadMove(){
+        doNothing().when(instancjaGry).badMove();
+        instancjaGry.badMove();
+        verify(instancjaGry,times(1)).badMove();
+    }
+
 }
 
